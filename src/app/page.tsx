@@ -18,6 +18,7 @@ const ParticleField = dynamic(() => import('@/components/ParticleField'), { ssr:
 const CursorTrail = dynamic(() => import('@/components/CursorTrail'), { ssr: false });
 const AmbientSound = dynamic(() => import('@/components/AmbientSound'), { ssr: false });
 const TimeAwareTheme = dynamic(() => import('@/components/TimeAwareTheme'), { ssr: false });
+const PolaroidGallery = dynamic(() => import('@/components/PolaroidGallery'), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -500,7 +501,7 @@ export default function Home() {
             color="var(--accent-sage)"
             animationType="typewriter"
           />
-          {/* Hand-drawn connector: Chapter 2 → Chapter 3 */}
+          {/* Hand-drawn connector: Chapter 2 → Selected Works */}
           <HandDrawnSVG
             preset="spiral"
             width={90}
@@ -512,18 +513,44 @@ export default function Home() {
             opacity={0.45}
             zIndex={3}
           />
+        </div>
 
-          {/* Hand-drawn star accent */}
-          <HandDrawnSVG
-            preset="star"
-            width={50}
-            height={50}
-            style={{ top: '65%', right: '8%', rotate: '20deg' }}
+        {/* ==================== SELECTED WORKS ==================== */}
+        <div className="relative" style={{ height: '140vh' }}>
+          <ScatteredText
+            text="SELECTED WORKS"
+            style={{ top: '5%', right: '10%', rotate: '-2deg', fontSize: 'clamp(3rem, 6vw, 5rem)' }}
+            font="serif"
+            weight="900"
             color="var(--accent-warm)"
+            animationType="split"
+            zIndex={5}
+          />
+
+          <div className="absolute inset-x-0 top-[15%]">
+            <PolaroidGallery />
+          </div>
+
+          <ScatteredText
+            text="experiments in digital materiality"
+            style={{ top: '85%', left: '15%', rotate: '3deg', fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
+            font="sans"
+            italic
+            color="var(--accent-sage)"
+            animationType="fade"
+          />
+
+          {/* Hand-drawn connector: Selected Works → Mastery */}
+          <HandDrawnSVG
+            preset="braceLeft"
+            width={40}
+            height={120}
+            style={{ top: '88%', right: '20%', rotate: '10deg' }}
+            color="var(--accent-sepia)"
             strokeWidth={2}
-            duration={1.5}
+            duration={2}
             opacity={0.3}
-            zIndex={2}
+            zIndex={3}
           />
         </div>
 
