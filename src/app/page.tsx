@@ -475,7 +475,7 @@ export default function Home() {
                   className="pointer-events-none select-none" />
               </div>
               <div data-physics data-mass="0.9" className="absolute" style={{ top: '40%', left: '25%' }}>
-                <div className="text-4xl md:text-6xl font-bold cursor-pointer transition-transform hover:scale-110" style={{
+                <div className="text-4xl md:text-6xl font-bold" style={{
                   fontFamily: 'var(--font-serif)',
                   color: 'var(--accent-cream)',
                   textShadow: '0 0 30px rgba(196,149,106,0.3)'
@@ -483,12 +483,11 @@ export default function Home() {
                   PLAY
                 </div>
               </div>
-
               <div data-physics data-mass="1.5" className="absolute" style={{ top: '35%', right: '20%' }}>
-                <div className="text-3xl md:text-5xl font-bold cursor-pointer transition-transform hover:scale-110" style={{
+                <div className="text-3xl md:text-5xl font-bold" style={{
                   fontFamily: 'var(--font-serif)',
-                  color: 'var(--accent-sepia)', // Changed from sepia to cream for visibility
-                  textShadow: '0 0 30px rgba(196,149,106,0.3)'
+                  color: 'var(--accent-sepia)',
+                  textShadow: '0 0 30px rgba(139,105,20,0.3)'
                 }}>
                   CREATE
                 </div>
@@ -554,8 +553,6 @@ export default function Home() {
             zIndex={3}
           />
         </div>
-        <div className="h-[20vh] w-full" />
-
 
         {/* ==================== SELECTED WORKS ==================== */}
         <div className="relative w-full">

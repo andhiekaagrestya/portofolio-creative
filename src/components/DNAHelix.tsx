@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
 
 interface DNAHelixProps {
@@ -23,11 +23,6 @@ export default function DNAHelix({
   frequency = 0.5,
   className = "",
 }: DNAHelixProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Merge texts for the strands
   const strand1Text = texts.filter((_, i) => i % 2 === 0).join(" • ");
@@ -53,8 +48,6 @@ export default function DNAHelix({
     const current = time.get();
     time.set(current + (delta / 1000) * speed);
   });
-
-  if (!isMounted) return null;
 
   return (
     <div className={`relative flex items-center justify-center w-[120vw] h-[80vh] overflow-visible select-none pointer-events-none ${className}`}>
