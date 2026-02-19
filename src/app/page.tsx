@@ -19,6 +19,7 @@ const CursorTrail = dynamic(() => import('@/components/CursorTrail'), { ssr: fal
 const AmbientSound = dynamic(() => import('@/components/AmbientSound'), { ssr: false });
 const TimeAwareTheme = dynamic(() => import('@/components/TimeAwareTheme'), { ssr: false });
 const PolaroidGallery = dynamic(() => import('@/components/PolaroidGallery'), { ssr: false });
+const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,6 +87,25 @@ export default function Home() {
         },
       });
     }
+
+    // Reveal animation for HoverMorphText elements
+    const revealTexts = document.querySelectorAll('.reveal-text');
+    revealTexts.forEach((text) => {
+      gsap.fromTo(text,
+        { opacity: 0, y: 50, filter: 'blur(10px)' },
+        {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 1.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: text,
+            start: 'top 85%',
+          }
+        }
+      );
+    });
   }, []);
 
   const nameLine1 = 'Andhieka Agrestya';
@@ -287,14 +307,21 @@ export default function Home() {
             opacity={0.25}
           />
 
-          <ScatteredText
+          <HoverMorphText
             text="THE SPARK"
-            style={{ top: '55%', left: '40%', rotate: '-8deg', fontSize: 'clamp(3rem, 8vw, 7rem)' }}
+            className="reveal-text"
             font="serif"
-            weight="900"
+            weight={900}
             color="var(--accent-sepia)"
-            animationType="glitch"
-            zIndex={5}
+            italicHover
+            style={{
+              position: 'absolute',
+              top: '55%',
+              left: '40%',
+              rotate: '-8deg',
+              fontSize: 'clamp(3rem, 8vw, 7rem)',
+              zIndex: 5
+            }}
           />
 
           <CollageElement
@@ -484,14 +511,21 @@ export default function Home() {
             magnetic
           />
 
-          <ScatteredText
+          <HoverMorphText
             text="STACKING"
-            style={{ top: '82%', left: '50%', rotate: '12deg', fontSize: 'clamp(5rem, 12vw, 10rem)' }}
+            className="reveal-text"
             font="serif"
-            weight="900"
+            weight={900}
             color="var(--accent-rust)"
-            animationType="glitch"
-            zIndex={6}
+            italicHover
+            style={{
+              position: 'absolute',
+              top: '82%',
+              left: '50%',
+              rotate: '12deg',
+              fontSize: 'clamp(5rem, 12vw, 10rem)',
+              zIndex: 6
+            }}
           />
 
           <ScatteredText
@@ -516,21 +550,27 @@ export default function Home() {
         </div>
 
         {/* ==================== SELECTED WORKS ==================== */}
-        <div className="relative" style={{ height: '140vh' }}>
-          <ScatteredText
+        <div className="relative w-full">
+          <HoverMorphText
             text="SELECTED WORKS"
-            style={{ top: '5%', right: '10%', rotate: '-2deg', fontSize: 'clamp(3rem, 6vw, 5rem)' }}
+            className="reveal-text"
             font="serif"
-            weight="900"
+            weight={900}
             color="var(--accent-warm)"
-            animationType="split"
-            zIndex={5}
+            italicHover
+            style={{
+              position: 'absolute',
+              top: '5vh',
+              right: '10%',
+              rotate: '-2deg',
+              fontSize: 'clamp(3rem, 6vw, 5rem)',
+              zIndex: 10
+            }}
           />
 
-          <div className="absolute inset-x-0 top-[15%]">
+          <div className="relative w-full pt-[20vh]">
             <PolaroidGallery />
           </div>
-
           <ScatteredText
             text="experiments in digital materiality"
             style={{ top: '85%', left: '15%', rotate: '3deg', fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
@@ -727,14 +767,21 @@ export default function Home() {
             </div>
           </MousePhysics>
 
-          <ScatteredText
+          <HoverMorphText
             text="DEPTH"
-            style={{ top: '74%', right: '10%', rotate: '-10deg', fontSize: 'clamp(6rem, 16vw, 14rem)' }}
+            className="reveal-text"
             font="serif"
-            weight="900"
+            weight={900}
             color="var(--accent-sepia)"
-            animationType="glitch"
-            zIndex={6}
+            italicHover
+            style={{
+              position: 'absolute',
+              top: '74%',
+              right: '10%',
+              rotate: '-10deg',
+              fontSize: 'clamp(6rem, 16vw, 14rem)',
+              zIndex: 6
+            }}
           />
 
           <CollageElement
@@ -796,14 +843,21 @@ export default function Home() {
           <div className="absolute w-[700px] h-[700px] rounded-full opacity-6"
             style={{ top: '20%', left: '30%', background: 'radial-gradient(circle, rgba(196,149,106,0.2), transparent)', filter: 'blur(120px)' }} />
 
-          <ScatteredText
+          <HoverMorphText
             text="WHAT'S NEXT"
-            style={{ top: '5%', left: '15%', rotate: '3deg', fontSize: 'clamp(4rem, 12vw, 10rem)' }}
+            className="reveal-text"
             font="serif"
-            weight="900"
-            color="var(--accent-cream)"
-            animationType="split"
-            zIndex={5}
+            weight={900}
+            color="var(--foreground)"
+            italicHover
+            style={{
+              position: 'absolute',
+              top: '5%',
+              left: '15%',
+              rotate: '3deg',
+              fontSize: 'clamp(4rem, 12vw, 10rem)',
+              zIndex: 5
+            }}
           />
 
           <ScatteredText
@@ -946,6 +1000,6 @@ export default function Home() {
         </div>
 
       </main>
-    </SmoothScroll>
+    </SmoothScroll >
   );
 }
