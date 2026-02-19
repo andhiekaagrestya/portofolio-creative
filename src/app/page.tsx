@@ -21,7 +21,7 @@ const AmbientSound = dynamic(() => import('@/components/AmbientSound'), { ssr: f
 const TimeAwareTheme = dynamic(() => import('@/components/TimeAwareTheme'), { ssr: false });
 const PolaroidGallery = dynamic(() => import('@/components/PolaroidGallery'), { ssr: false });
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
-
+const ScannerEffect = dynamic(() => import('@/components/ScannerEffect'), { ssr: false });
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
@@ -120,7 +120,7 @@ export default function Home() {
       <GrainOverlay />
       <CursorTrail />
       <AmbientSound />
-
+      <ScannerEffect />
       {/* Scroll progress */}
       <div className="fixed top-0 left-0 w-full h-[2px] z-[100]">
         <div
