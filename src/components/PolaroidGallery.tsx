@@ -119,7 +119,7 @@ export default function PolaroidGallery() {
         style={{ height: `${PROJECTS.length * 100 + 100}vh` }} // Dynamic height based on items
       >
         {/* The Viewport (Sticky Window) */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#1a1510] perspective-[1000px] flex items-center justify-center">
+        <div className="sticky top-0 h-screen w-full overflow-hidden perspective-[1000px] flex items-center justify-center">
 
           {/* Ambient Particles / Starfield */}
           <WormholeParticles zPosition={zPosition} />

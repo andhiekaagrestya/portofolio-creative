@@ -12,7 +12,7 @@ import MousePhysics from '@/components/MousePhysics';
 import GrainOverlay from '@/components/GrainOverlay';
 import LoadingScreen from '@/components/LoadingScreen';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
-import DNAHelix from '../components/DNAHelix';
+import DNAHelix from '@/components/DNAHelix';
 
 // Dynamic imports for browser-only components (no SSR to fix hydration)
 const ParticleField = dynamic(() => import('@/components/ParticleField'), { ssr: false });
