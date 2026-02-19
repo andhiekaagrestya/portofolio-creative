@@ -23,9 +23,10 @@ interface CollageElementProps {
   parallaxSpeed?: number;
   scrollStart?: string;
   scrollEnd?: string;
-  animateFrom?: 'left' | 'right' | 'top' | 'bottom' | 'scale';
+  animateFrom?: 'left' | 'right' | 'top' | 'bottom' | 'scale' | 'static';
   blendMode?: string;
   magnetic?: boolean;
+  className?: string; // Added className support
 }
 
 export default function CollageElement({
@@ -40,6 +41,7 @@ export default function CollageElement({
   animateFrom = 'scale',
   blendMode,
   magnetic = false,
+  className = '', // Default to empty string
 }: CollageElementProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const magneticPos = useRef({ x: 0, y: 0 });
@@ -86,15 +88,17 @@ export default function CollageElement({
         break;
     }
 
-    gsap.fromTo(el, fromVars, {
-      ...toVars,
-      scrollTrigger: {
-        trigger: el,
-        start: scrollStart,
-        end: scrollEnd,
-        toggleActions: 'play none none reverse',
-      },
-    });
+    if (animateFrom !== 'static') {
+      gsap.fromTo(el, fromVars, {
+        ...toVars,
+        scrollTrigger: {
+          trigger: el,
+          start: scrollStart,
+          end: scrollEnd,
+          toggleActions: 'play none none reverse',
+        },
+      });
+    }
 
     // Parallax
     gsap.to(el, {
@@ -145,7 +149,7 @@ export default function CollageElement({
   return (
     <div
       ref={elementRef}
-      className="absolute collage-img"
+      className={`absolute collage-img ${className}`}
       style={{
         top: style.top,
         left: style.left,
@@ -165,7 +169,7 @@ export default function CollageElement({
         style={{
           filter: 'saturate(1.2) contrast(1.05)',
         }}
-        priority
+        priority // Consider adding priority if LCP element
       />
     </div>
   );

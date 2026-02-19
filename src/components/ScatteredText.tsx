@@ -3,142 +3,134 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ScatteredTextProps {
   text: string;
-  style: {
-    top?: string;
-    left?: string;
-    right?: string;
-    bottom?: string;
-    rotate?: string;
-    fontSize?: string;
-  };
-  font?: 'sans' | 'serif' | 'mono';
-  color?: string;
-  blendMode?: string;
-  weight?: string;
+  style?: React.CSSProperties; // Top, left, rotate
+  font?: 'serif' | 'sans' | 'mono';
+  weight?: string | number;
   italic?: boolean;
+  italicHover?: boolean; // Italicize on hover?
+  color?: string;
   animationType?: 'fade' | 'typewriter' | 'split' | 'glitch';
   zIndex?: number;
+  className?: string; // Added className support
 }
 
 export default function ScatteredText({
   text,
   style,
   font = 'sans',
-  color = 'var(--foreground)',
-  blendMode,
   weight = '400',
   italic = false,
+  italicHover = false,
+  color = 'currentColor',
   animationType = 'fade',
-  zIndex = 2,
+  zIndex = 1,
+  className = '',
 }: ScatteredTextProps) {
-  const textRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Typewriter effect state
+  // We use GSAP for most animations, but for typewriter we might need a separate approach or just CSS steps
+  // Actually let's use GSAP TextPlugin if available, or just a simple stagger
 
   useEffect(() => {
-    if (!textRef.current) return;
-    const el = textRef.current;
+    const el = ref.current;
+    if (!el) return;
 
-    switch (animationType) {
-      case 'fade':
-        gsap.fromTo(el,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-        break;
+    // Reset state
+    gsap.killTweensOf(el);
 
-      case 'typewriter': {
-        const chars = el.querySelectorAll('.char');
-        gsap.fromTo(chars,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1, y: 0, duration: 0.05, stagger: 0.03, ease: 'none',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
+    if (animationType === 'fade') {
+      gsap.fromTo(el,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
           }
-        );
-        break;
-      }
-
-      case 'split': {
-        const chars = el.querySelectorAll('.char');
-        gsap.fromTo(chars,
-          { opacity: 0, y: 50, rotateX: -90 },
-          {
-            opacity: 1, y: 0, rotateX: 0, duration: 0.8, stagger: 0.02, ease: 'back.out(1.7)',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-        break;
-      }
-
-      case 'glitch':
-        gsap.fromTo(el,
-          { opacity: 0, skewX: 20, x: -50 },
-          {
-            opacity: 1, skewX: 0, x: 0, duration: 0.6, ease: 'power4.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-        break;
+        }
+      );
     }
-  }, [animationType]);
-
-  const fontFamily = font === 'serif' ? 'var(--font-serif)' : font === 'mono' ? 'var(--font-mono)' : 'var(--font-sans)';
-
-  const renderText = () => {
-    if (animationType === 'typewriter' || animationType === 'split') {
-      return text.split('').map((char, i) => (
-        <span key={i} className="char inline-block" style={{ display: char === ' ' ? 'inline' : 'inline-block' }}>
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ));
+    else if (animationType === 'split') {
+      // Simple split reveal (opacity)
+      gsap.fromTo(el,
+        { opacity: 0, scale: 0.9, filter: 'blur(10px)' },
+        {
+          opacity: 1,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+          }
+        }
+      );
     }
-    return text;
-  };
+    else if (animationType === 'typewriter') {
+      const chars = text.length;
+      // Use clip-path instead of width to prevent layout issues with absolute positioning
+      gsap.fromTo(el,
+        { clipPath: 'inset(0 100% 0 0)', opacity: 1 },
+        {
+          clipPath: 'inset(0 0% 0 0)',
+          duration: chars * 0.05,
+          ease: 'steps(' + chars + ')',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+          }
+        }
+      );
+    }
+    else if (animationType === 'glitch') {
+      // Glitch entry
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 80%',
+        }
+      });
+
+      tl.fromTo(el, { opacity: 0, skewX: 20 }, { opacity: 1, skewX: 0, duration: 0.2 })
+        .to(el, { x: -5, duration: 0.1, color: 'var(--accent-rust)' })
+        .to(el, { x: 5, duration: 0.1, color: 'var(--accent-sage)' })
+        .to(el, { x: 0, duration: 0.1, color: color });
+    }
+
+  }, [animationType, color, text]);
+
+  const fontClass = font === 'serif' ? 'font-serif' : font === 'mono' ? 'font-mono' : 'font-sans';
 
   return (
-    <div
-      ref={textRef}
-      className="text-scattered"
+    <motion.div
+      ref={ref}
+      className={`absolute ${fontClass} ${className}`}
       style={{
-        top: style.top,
-        left: style.left,
-        right: style.right,
-        bottom: style.bottom,
-        transform: `rotate(${style.rotate || '0deg'})`,
-        fontSize: style.fontSize || '1rem',
-        fontFamily,
+        ...style,
         fontWeight: weight,
         fontStyle: italic ? 'italic' : 'normal',
         color,
-        mixBlendMode: blendMode as React.CSSProperties['mixBlendMode'],
         zIndex,
-        letterSpacing: font === 'mono' ? '0.05em' : '0',
+        // For typewriter, we use clip-path so overflow visible is fine (or hidden if we want to be safe, but clip-path handles it)
+        // overflow: animationType === 'typewriter' ? 'hidden' : 'visible', 
+        whiteSpace: 'nowrap',
+        display: 'inline-block',
       }}
     >
-      {renderText()}
-    </div>
+      <span className={italicHover ? 'transition-all duration-300 hover:italic hover:tracking-widest cursor-none' : ''}>
+        {text}
+      </span>
+    </motion.div>
   );
 }

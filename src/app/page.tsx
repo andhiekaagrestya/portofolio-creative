@@ -149,7 +149,7 @@ export default function Home() {
                 {nameLine1.split('').map((letter, i) => (
                   <span
                     key={`l1-${i}`}
-                    className="letter inline-block text-4xl md:text-7xl lg:text-[8rem] font-bold tracking-tighter"
+                    className="letter inline-block text-3xl md:text-7xl lg:text-[8rem] font-bold tracking-tighter"
                     style={{
                       fontFamily: 'var(--font-serif)',
                       color: i % 3 === 0 ? 'var(--accent-cream)' :
@@ -166,7 +166,7 @@ export default function Home() {
                 {nameLine2.split('').map((letter, i) => (
                   <span
                     key={`l2-${i}`}
-                    className="letter inline-block text-4xl md:text-7xl lg:text-[8rem] font-bold tracking-tighter"
+                    className="letter inline-block text-3xl md:text-7xl lg:text-[8rem] font-bold tracking-tighter"
                     style={{
                       fontFamily: 'var(--font-serif)',
                       color: (i + nameLine1.length) % 3 === 0 ? 'var(--accent-cream)' :
@@ -192,18 +192,20 @@ export default function Home() {
           <CollageElement
             src="/collage/banana-plant.png"
             alt="Banana Plant Sketch"
-            width={350}
-            height={350}
-            style={{ top: '15%', right: '8%', rotate: '12deg', zIndex: 3 }}
+            width={200}
+            height={200}
+            className="w-[180px] md:w-[350px]"
+            style={{ top: '15%', right: '5%', rotate: '12deg', zIndex: 3 }}
             parallaxSpeed={0.3}
             animateFrom="right"
           />
           <CollageElement
             src="/collage/camera.png"
             alt="Vintage Camera"
-            width={350}
-            height={350}
-            style={{ bottom: '20%', left: '5%', rotate: '-8deg', zIndex: 2 }}
+            width={200}
+            height={200}
+            className="w-[180px] md:w-[350px]"
+            style={{ bottom: '25%', left: '5%', rotate: '-8deg', zIndex: 2 }}
             parallaxSpeed={0.5}
             animateFrom="left"
           />
@@ -255,12 +257,13 @@ export default function Home() {
             zIndex={4}
           />
 
-          <CollageElement
+          <CollageElement // Restored opening tag
             src="/collage/typewriter.png"
             alt="Typewriter"
-            width={350}
-            height={350}
-            style={{ top: '18%', left: '15%', rotate: '-5deg', zIndex: 3 }}
+            width={200}
+            height={200}
+            className="w-[120px] md:w-[350px] !top-[60%] !left-[5%] md:!top-[18%] md:!left-[15%]"
+            style={{ rotate: '-5deg', zIndex: 3 }}
             parallaxSpeed={0.4}
             animateFrom="left"
             magnetic
@@ -328,9 +331,10 @@ export default function Home() {
           <CollageElement
             src="/collage/books.png"
             alt="Books"
-            width={350}
-            height={350}
-            style={{ top: '60%', left: '60%', rotate: '8deg', zIndex: 2 }}
+            width={200}
+            height={200}
+            className="w-[120px] md:w-[350px] !top-[75%] !left-[60%] md:!top-[60%] md:!left-[60%]"
+            style={{ rotate: '8deg', zIndex: 2 }}
             parallaxSpeed={0.6}
             animateFrom="bottom"
           />
@@ -567,12 +571,12 @@ export default function Home() {
               top: '5vh',
               right: '10%',
               rotate: '-2deg',
-              fontSize: 'clamp(3rem, 6vw, 5rem)',
+              fontSize: 'clamp(2rem, 6vw, 5rem)',
               zIndex: 10
             }}
           />
 
-          <div className="relative w-full pt-[20vh]">
+          <div className="relative w-full pt-[10vh] min-h-[60vh] md:min-h-[80vh]">
             <PolaroidGallery />
           </div>
           <ScatteredText
@@ -587,7 +591,7 @@ export default function Home() {
 
           {/* === ORGANIC DNA HELIX === */}
           <div
-            className="relative w-full h-[85vh] z-20 flex items-center justify-center border-y border-[#d4c5a9]/5 overflow-hidden"
+            className="relative w-full h-[60vh] md:h-[85vh] z-20 flex items-center justify-center border-y border-[#d4c5a9]/5 overflow-hidden"
             style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }}
           >
             {/* No background - Transparent */}
@@ -615,7 +619,7 @@ export default function Home() {
 
           <ScatteredText
             text="MASTERY"
-            style={{ top: '2%', left: '5%', rotate: '-5deg', fontSize: 'clamp(5rem, 14vw, 12rem)' }}
+            style={{ top: '2%', left: '5%', rotate: '-5deg', fontSize: 'clamp(3rem, 14vw, 12rem)' }}
             font="serif"
             weight="900"
             color="var(--accent-cream)"
@@ -639,7 +643,8 @@ export default function Home() {
             alt="Mastery 1"
             width={320}
             height={320}
-            style={{ top: '13%', left: '5%', rotate: '-8deg', zIndex: 4 }}
+            className="w-[140px] md:w-[320px] !top-[55%] !left-[5%] md:!top-[13%] md:!left-[5%]"
+            style={{ rotate: '-8deg', zIndex: 4 }}
             parallaxSpeed={0.3}
             animateFrom="left"
             magnetic
@@ -649,7 +654,8 @@ export default function Home() {
             alt="Mastery 2"
             width={280}
             height={280}
-            style={{ top: '15%', left: '35%', rotate: '5deg', zIndex: 3 }}
+            className="w-[120px] md:w-[280px] !top-[60%] !left-[70%] md:!top-[15%] md:!left-[35%]"
+            style={{ rotate: '5deg', zIndex: 3 }}
             parallaxSpeed={0.5}
             animateFrom="scale"
           />
@@ -658,7 +664,8 @@ export default function Home() {
             alt="Mastery 3"
             width={250}
             height={250}
-            style={{ top: '18%', right: '8%', rotate: '-12deg', zIndex: 5 }}
+            className="w-[100px] md:w-[250px] !top-[25%] !right-[5%] md:!top-[18%] md:!right-[8%]"
+            style={{ rotate: '-12deg', zIndex: 5 }}
             parallaxSpeed={0.7}
             animateFrom="right"
             magnetic
@@ -745,9 +752,9 @@ export default function Home() {
               <div data-physics data-mass="0.5" className="absolute" style={{ top: '15%', left: '5%' }}>
                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border opacity-30" style={{ borderColor: 'var(--accent-warm)' }} />
               </div>
-              <div data-physics data-mass="0.7" className="absolute" style={{ top: '10%', left: '25%' }}>
+              <div data-physics data-mass="0.7" className="absolute" style={{ top: '10%', left: '8%' }}>
                 <Image src="/collage/banana-plant.png" alt="p1" width={130} height={130}
-                  className="pointer-events-none select-none rounded-lg" />
+                  className="pointer-events-none select-none rounded-lg w-[80px] md:w-[130px]" />
               </div>
               <div data-physics data-mass="1.0" className="absolute" style={{ top: '20%', left: '50%' }}>
                 <div className="text-5xl md:text-7xl font-bold" style={{
@@ -793,7 +800,7 @@ export default function Home() {
               top: '74%',
               right: '10%',
               rotate: '-10deg',
-              fontSize: 'clamp(6rem, 16vw, 14rem)',
+              fontSize: 'clamp(4rem, 16vw, 14rem)',
               zIndex: 6
             }}
           />
