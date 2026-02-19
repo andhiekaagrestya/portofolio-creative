@@ -12,6 +12,7 @@ import MousePhysics from '@/components/MousePhysics';
 import GrainOverlay from '@/components/GrainOverlay';
 import LoadingScreen from '@/components/LoadingScreen';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
+import DNAHelix from '../components/DNAHelix';
 
 // Dynamic imports for browser-only components (no SSR to fix hydration)
 const ParticleField = dynamic(() => import('@/components/ParticleField'), { ssr: false });
@@ -573,12 +574,22 @@ export default function Home() {
           </div>
           <ScatteredText
             text="experiments in digital materiality"
-            style={{ top: '85%', left: '15%', rotate: '3deg', fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
+
+            style={{ top: '85%', left: '1' + '5%', rotate: '3deg', fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
             font="sans"
             italic
             color="var(--accent-sage)"
             animationType="fade"
           />
+
+          {/* === ORGANIC DNA HELIX === */}
+          <div
+            className="relative w-full h-[85vh] z-20 flex items-center justify-center border-y border-[#d4c5a9]/5 overflow-hidden"
+            style={{ maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' }}
+          >
+            {/* No background - Transparent */}
+            <DNAHelix className="opacity-90" />
+          </div>
 
           {/* Hand-drawn connector: Selected Works → Mastery */}
           <HandDrawnSVG
