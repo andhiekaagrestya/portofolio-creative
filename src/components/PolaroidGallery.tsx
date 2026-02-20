@@ -201,7 +201,12 @@ function WormholeCard({ project, initialZ, worldZ, onClick }: {
     >
       <motion.div
         className="w-[300px] md:w-[400px] aspect-[4/5] relative group cursor-pointer"
-        whileHover={{ scale: 1.05, rotate: 0 }}
+        initial="rest"
+        whileHover="hover"
+        variants={{
+          rest: { scale: 1, rotate: 0 },
+          hover: { scale: 1.05, rotate: 0 }
+        }}
         onClick={onClick}
       >
         <div className="w-full h-full bg-[#f4f1e1] p-4 pb-16 shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-[#d4c5a9]/20 transition-all duration-500">
@@ -226,9 +231,29 @@ function WormholeCard({ project, initialZ, worldZ, onClick }: {
             </p>
           </div>
 
-          {/* Tape */}
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#ebe1cd] opacity-90 shadow-sm"
-            style={{ transform: `rotate(${Math.random() * 4 - 2}deg)` }} />
+          {/* Tape with interactive peeling effect */}
+          <motion.div
+            className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#ebe1cd] opacity-90 backdrop-blur-sm"
+            style={{
+              transformOrigin: 'bottom center', // Peel from the bottom edge
+              rotateZ: Math.random() * 4 - 2 // Keep the initial slight random tilt
+            }}
+            variants={{
+              rest: {
+                rotateX: 0,
+                y: 0,
+                z: 0,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.2)"
+              },
+              hover: {
+                rotateX: 90, // Dramatic curl upwards
+                y: -5,       // Lift significantly away from the top edge
+                z: 20,       // Pull toward camera for 3D depth
+                boxShadow: "0 15px 15px -5px rgba(0,0,0,0.6)" // Harsh shadow underneath the curled tape
+              }
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 10, mass: 0.5 }}
+          />
         </div>
       </motion.div>
     </motion.div>
