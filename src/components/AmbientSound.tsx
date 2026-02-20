@@ -5,16 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AmbientSound() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const nodesRef = useRef<AudioNode[]>([]);
-
-  // Dismiss tooltip after 4s
-  useEffect(() => {
-    const t = setTimeout(() => setShowTooltip(false), 4000);
-    return () => clearTimeout(t);
-  }, []);
 
   const createAmbientLayers = useCallback((ctx: AudioContext, master: GainNode) => {
     const nodes: AudioNode[] = [];
@@ -29,7 +24,6 @@ export default function AmbientSound() {
       let b0 = 0, b1 = 0, b2 = 0;
       for (let i = 0; i < vinylNoiseSize; i++) {
         const white = Math.random() * 2 - 1;
-        // Pink noise approximation — warmer than white
         b0 = 0.99886 * b0 + white * 0.0555179;
         b1 = 0.99332 * b1 + white * 0.0750759;
         b2 = 0.96900 * b2 + white * 0.1538520;
@@ -40,7 +34,6 @@ export default function AmbientSound() {
     vinylNoise.buffer = vinylBuffer;
     vinylNoise.loop = true;
 
-    // Shape it to sound like vinyl surface
     const vinylLP = ctx.createBiquadFilter();
     vinylLP.type = 'lowpass';
     vinylLP.frequency.value = 4500;
@@ -68,10 +61,8 @@ export default function AmbientSound() {
     for (let ch = 0; ch < 2; ch++) {
       const data = crackleBuffer.getChannelData(ch);
       for (let i = 0; i < crackleSize; i++) {
-        // Random pops — sparse
         const rnd = Math.random();
         if (rnd < 0.0008) {
-          // Big pop
           const decay = Math.min(60, crackleSize - i);
           for (let d = 0; d < decay; d++) {
             if (i + d < crackleSize) {
@@ -80,7 +71,6 @@ export default function AmbientSound() {
             }
           }
         } else if (rnd < 0.004) {
-          // Small tick
           data[i] = (Math.random() - 0.5) * 0.3;
         }
       }
@@ -107,14 +97,13 @@ export default function AmbientSound() {
     // ============================================
     const drone1 = ctx.createOscillator();
     drone1.type = 'sine';
-    drone1.frequency.value = 55; // A1 — deep root note
+    drone1.frequency.value = 55;
 
-    // Slow LFO to modulate drone pitch slightly (eerie wobble)
     const lfo1 = ctx.createOscillator();
     lfo1.type = 'sine';
-    lfo1.frequency.value = 0.07; // Very slow wobble
+    lfo1.frequency.value = 0.07;
     const lfo1Gain = ctx.createGain();
-    lfo1Gain.gain.value = 1.5; // ±1.5 Hz variation
+    lfo1Gain.gain.value = 1.5;
     lfo1.connect(lfo1Gain);
     lfo1Gain.connect(drone1.frequency);
     lfo1.start();
@@ -138,7 +127,7 @@ export default function AmbientSound() {
     // ============================================
     const drone2 = ctx.createOscillator();
     drone2.type = 'sine';
-    drone2.frequency.value = 82.4; // E2 — a haunting fifth above A1
+    drone2.frequency.value = 82.4;
 
     const lfo2 = ctx.createOscillator();
     lfo2.type = 'triangle';
@@ -163,9 +152,8 @@ export default function AmbientSound() {
     // ============================================
     const sub = ctx.createOscillator();
     sub.type = 'sine';
-    sub.frequency.value = 36.7; // D1 — sub bass
+    sub.frequency.value = 36.7;
 
-    // Slow amplitude modulation — breathing effect
     const subLfo = ctx.createOscillator();
     subLfo.type = 'sine';
     subLfo.frequency.value = 0.12;
@@ -192,7 +180,6 @@ export default function AmbientSound() {
       const data = padBuffer.getChannelData(ch);
       let prev = 0;
       for (let i = 0; i < padSize; i++) {
-        // Brown noise — deep rumble
         prev = (prev + Math.random() * 0.02 - 0.01) * 0.998;
         data[i] = prev * 8;
       }
@@ -204,9 +191,8 @@ export default function AmbientSound() {
     const padLP = ctx.createBiquadFilter();
     padLP.type = 'lowpass';
     padLP.frequency.value = 300;
-    padLP.Q.value = 3; // Slight resonance for eeriness
+    padLP.Q.value = 3;
 
-    // Slowly sweep the filter for movement
     const padLfo = ctx.createOscillator();
     padLfo.type = 'sine';
     padLfo.frequency.value = 0.03;
@@ -229,48 +215,89 @@ export default function AmbientSound() {
     return nodes;
   }, []);
 
+  // ── Start audio engine ──
+  const startAudio = useCallback(() => {
+    if (audioCtxRef.current) return; // Already running
+
+    const ctx = new AudioContext();
+    audioCtxRef.current = ctx;
+
+    const master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+    masterGainRef.current = master;
+
+    const nodes = createAmbientLayers(ctx, master);
+    nodesRef.current = nodes;
+
+    const now = ctx.currentTime;
+    master.gain.setValueAtTime(0, now);
+    master.gain.linearRampToValueAtTime(0.8, now + 3);
+
+    setIsPlaying(true);
+  }, [createAmbientLayers]);
+
+  // ── Stop audio engine ──
+  const stopAudio = useCallback(() => {
+    if (masterGainRef.current && audioCtxRef.current) {
+      const now = audioCtxRef.current.currentTime;
+      masterGainRef.current.gain.setValueAtTime(masterGainRef.current.gain.value, now);
+      masterGainRef.current.gain.linearRampToValueAtTime(0, now + 1.2);
+      setTimeout(() => {
+        nodesRef.current.forEach((n) => {
+          try { (n as OscillatorNode | AudioBufferSourceNode).stop(); } catch { /* already stopped */ }
+        });
+        nodesRef.current = [];
+        audioCtxRef.current?.close();
+        audioCtxRef.current = null;
+        masterGainRef.current = null;
+      }, 1400);
+    }
+    setIsPlaying(false);
+  }, []);
+
+  // ── AUTO-START on first user interaction (scroll or click) ──
+  useEffect(() => {
+    if (hasAutoStarted) return;
+
+    const onInteraction = () => {
+      if (!hasAutoStarted) {
+        setHasAutoStarted(true);
+        startAudio();
+        // Show a brief "sound on" tooltip
+        setShowTooltip(true);
+        setTimeout(() => setShowTooltip(false), 3000);
+        // Remove listeners after first trigger
+        window.removeEventListener('scroll', onInteraction);
+        window.removeEventListener('click', onInteraction);
+        window.removeEventListener('touchstart', onInteraction);
+        window.removeEventListener('keydown', onInteraction);
+      }
+    };
+
+    window.addEventListener('scroll', onInteraction, { passive: true });
+    window.addEventListener('click', onInteraction, { once: true });
+    window.addEventListener('touchstart', onInteraction, { passive: true });
+    window.addEventListener('keydown', onInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('scroll', onInteraction);
+      window.removeEventListener('click', onInteraction);
+      window.removeEventListener('touchstart', onInteraction);
+      window.removeEventListener('keydown', onInteraction);
+    };
+  }, [hasAutoStarted, startAudio]);
+
+  // ── Toggle on button click ──
   const toggleSound = useCallback(() => {
     if (isPlaying) {
-      // Fade out gracefully
-      if (masterGainRef.current && audioCtxRef.current) {
-        const now = audioCtxRef.current.currentTime;
-        masterGainRef.current.gain.setValueAtTime(masterGainRef.current.gain.value, now);
-        masterGainRef.current.gain.linearRampToValueAtTime(0, now + 1.2);
-        setTimeout(() => {
-          nodesRef.current.forEach((n) => {
-            try { (n as OscillatorNode | AudioBufferSourceNode).stop(); } catch { /* already stopped */ }
-          });
-          nodesRef.current = [];
-          audioCtxRef.current?.close();
-          audioCtxRef.current = null;
-          masterGainRef.current = null;
-        }, 1400);
-      }
-      setIsPlaying(false);
+      stopAudio();
     } else {
-      // Create audio context and start
-      const ctx = new AudioContext();
-      audioCtxRef.current = ctx;
-
-      const master = ctx.createGain();
-      master.gain.value = 0;
-      master.connect(ctx.destination);
-      masterGainRef.current = master;
-
-      const nodes = createAmbientLayers(ctx, master);
-      nodesRef.current = nodes;
-
-      // Slow fade in for cinematic feel
-      const now = ctx.currentTime;
-      master.gain.setValueAtTime(0, now);
-      master.gain.linearRampToValueAtTime(0.8, now + 3);
-
-      setIsPlaying(true);
-      setShowTooltip(false);
+      startAudio();
     }
-  }, [isPlaying, createAmbientLayers]);
+  }, [isPlaying, startAudio, stopAudio]);
 
-  // Cleanup on unmount
+  // ── Cleanup on unmount ──
   useEffect(() => {
     return () => {
       nodesRef.current.forEach((n) => {
@@ -299,7 +326,7 @@ export default function AmbientSound() {
               backdropFilter: 'blur(8px)',
             }}
           >
-            ♪ turn on the projector
+            ♪ projector on
             <div
               className="absolute -bottom-1 right-4 w-2 h-2 rotate-45"
               style={{ background: 'rgba(26,21,16,0.9)', borderRight: '1px solid rgba(196,149,106,0.2)', borderBottom: '1px solid rgba(196,149,106,0.2)' }}

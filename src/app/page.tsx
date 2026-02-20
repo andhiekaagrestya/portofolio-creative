@@ -140,7 +140,7 @@ export default function Home() {
       <main ref={mainRef} className="relative" style={{ zIndex: 1 }}>
 
         {/* ==================== VOID / INTRO ==================== */}
-        <div className="relative" style={{ height: '120vh' }}>
+        <div className="relative overflow-hidden" style={{ height: '120vh' }}>
           {/* Warm ambient light - like projector glow */}
           <div className="absolute w-[600px] h-[600px] rounded-full opacity-10"
             style={{ top: '20%', left: '20%', background: 'radial-gradient(circle, rgba(196,149,106,0.4), transparent)', filter: 'blur(80px)' }} />
@@ -149,7 +149,7 @@ export default function Home() {
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <div ref={nameRef} className="flex flex-col items-center gap-1 md:gap-2 px-4" style={{ perspective: '800px' }}>
               {/* Line 1: Andhieka Agrestya */}
-              <div className="flex gap-1 md:gap-3 justify-center">
+              <div className="flex gap-1 md:gap-3 justify-center flex-wrap max-w-full">
                 {nameLine1.split('').map((letter, i) => (
                   <span
                     key={`l1-${i}`}
@@ -166,7 +166,7 @@ export default function Home() {
                 ))}
               </div>
               {/* Line 2: Al Ara Ab */}
-              <div className="flex gap-1 md:gap-3 justify-center">
+              <div className="flex gap-1 md:gap-3 justify-center flex-wrap max-w-full">
                 {nameLine2.split('').map((letter, i) => (
                   <span
                     key={`l2-${i}`}
@@ -237,7 +237,7 @@ export default function Home() {
         </div>
 
         {/* ==================== ORIGIN / CHAPTER 1 ==================== */}
-        <div className="relative" style={{ height: '200vh' }}>
+        <div className="relative overflow-hidden" style={{ height: '200vh' }}>
           {/* --- BACKGROUND LAYER (Deep, Slow) --- */}
           <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
             {/* Warm projector glow */}
@@ -401,7 +401,7 @@ export default function Home() {
         </div>
 
         {/* ==================== GROWTH / CHAPTER 2 ==================== */}
-        <div className="relative" style={{ height: '220vh' }}>
+        <div className="relative overflow-hidden" style={{ height: '220vh' }}>
           {/* --- BACKGROUND LAYER --- */}
           <DioramaLayer speed={0.5} className="z-0" fadeOnScroll>
             <div className="absolute w-[500px] h-[500px] rounded-full opacity-8"
@@ -969,7 +969,7 @@ export default function Home() {
         </div>
 
         {/* ==================== MASTERY / CHAPTER 3 ==================== */}
-        <div className="relative" style={{ height: '250vh' }}>
+        <div className="relative overflow-hidden" style={{ height: '250vh' }}>
           <div className="absolute w-[600px] h-[600px] rounded-full opacity-8"
             style={{ top: '10%', left: '10%', background: 'radial-gradient(circle, rgba(196,149,106,0.25), transparent)', filter: 'blur(120px)' }} />
 
@@ -1481,7 +1481,7 @@ export default function Home() {
         </div>
 
         {/* ==================== TESTIMONIALS / MEMO BOARD ==================== */}
-        <div className="relative" style={{ height: '180vh' }}>
+        <div className="relative overflow-hidden" style={{ height: '180vh' }}>
 
           {/* Warm ambient light */}
           <div className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
