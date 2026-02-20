@@ -20,6 +20,7 @@ interface CollageElementProps {
     rotate?: string;
     zIndex?: number;
     filter?: string;
+    opacity?: number;
   };
   parallaxSpeed?: number;
   scrollStart?: string;
@@ -158,7 +159,8 @@ export default function CollageElement({
         bottom: style.bottom,
         transform: `rotate(${style.rotate || '0deg'})`,
         zIndex: style.zIndex || 1,
-        filter: style.filter, // Apply the newly added filter prop
+        filter: style.filter,
+        opacity: style.opacity,
         mixBlendMode: blendMode as React.CSSProperties['mixBlendMode'],
       }}
     >
