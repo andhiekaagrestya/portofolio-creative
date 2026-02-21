@@ -148,7 +148,7 @@ export default function AdminPage() {
         </div>
 
         <p style={{ marginTop: 60, fontSize: 11, color: '#333', borderTop: '1px solid #222', paddingTop: 20 }}>
-          nano banana portfolio · admin · {new Date().getFullYear()}
+          creative portfolio · admin · {new Date().getFullYear()}
         </p>
       </div>
 
