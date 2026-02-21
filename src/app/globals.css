@@ -36,7 +36,9 @@ html {
   -ms-overflow-style: none;
 }
 
-* {
+/* Hide default cursor only when this class is present */
+.hide-native-cursor,
+.hide-native-cursor * {
   cursor: none !important;
 }
 
@@ -428,4 +430,12 @@ body {
   background: rgba(196, 149, 106, 0.25);
   transform: rotate(-1deg);
   border-radius: 1px;
+}
+
+/* Force cursor visible in admin panel */
+.admin-page,
+.admin-page *,
+.show-native-cursor,
+.show-native-cursor * {
+  cursor: auto !important;
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import ExperimentalConfirm from '@/components/ExperimentalConfirm';
 
 interface Note {
   id: string;
@@ -27,6 +28,8 @@ export default function AdminPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState('');
 
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!key) { router.replace('/'); return; }
 
@@ -40,8 +43,15 @@ export default function AdminPage() {
       .finally(() => setLoading(false));
   }, [key, router]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this note?')) return;
+  const confirmDelete = (id: string) => {
+    setPendingDeleteId(id);
+  };
+
+  const handleExecuteDelete = async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+
+    setPendingDeleteId(null);
     setDeleting(id);
     try {
       const res = await fetch(`/api/memoboard/${id}`, {
@@ -64,7 +74,7 @@ export default function AdminPage() {
   if (!key) return null;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0d0a', color: '#d4c5a9', fontFamily: 'monospace', padding: '40px 24px' }}>
+    <div style={{ minHeight: '100vh', background: '#0f0d0a', color: '#d4c5a9', fontFamily: 'monospace', padding: '40px 24px', cursor: 'auto' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: 40 }}>
@@ -114,7 +124,7 @@ export default function AdminPage() {
 
               {/* Delete button */}
               <button
-                onClick={() => handleDelete(note.id)}
+                onClick={() => confirmDelete(note.id)}
                 disabled={deleting === note.id}
                 style={{
                   marginTop: 14,
@@ -141,6 +151,13 @@ export default function AdminPage() {
           nano banana portfolio · admin · {new Date().getFullYear()}
         </p>
       </div>
+
+      <ExperimentalConfirm
+        isOpen={!!pendingDeleteId}
+        message="This action is permanent and cannot be undone. The note will be lost in the void forever."
+        onConfirm={handleExecuteDelete}
+        onCancel={() => setPendingDeleteId(null)}
+      />
     </div>
   );
 }

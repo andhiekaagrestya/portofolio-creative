@@ -61,7 +61,7 @@ export default function CursorTrail() {
             width: 8 - i,
             height: 8 - i,
             background: `rgba(196, 149, 106, ${0.5 - i * 0.07})`,
-            zIndex: 9997,
+            zIndex: 99998,
             transition: 'opacity 0.3s ease',
           }}
         />
@@ -70,7 +70,7 @@ export default function CursorTrail() {
       <div
         ref={cursorRef}
         className="fixed top-0 left-0 pointer-events-none"
-        style={{ zIndex: 9998 }}
+        style={{ zIndex: 99999 }}
       >
         <div className="relative w-6 h-6">
           <div className="absolute inset-0 rounded-full border opacity-70" style={{ borderColor: 'var(--accent-cream)' }} />

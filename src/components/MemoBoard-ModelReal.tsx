@@ -2,7 +2,13 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
-import TapeRoll3D from './TapeRoll3D';
+import dynamic from 'next/dynamic';
+
+// Three.js tape roll — loaded only on client (no SSR, needs WebGL)
+const TapeRoll3D = dynamic(
+  () => import('./TapeRoll3D-ModelReal').then((m) => ({ default: m.TapeRoll3D })),
+  { ssr: false, loading: () => <div style={{ width: 320, height: 260 }} /> },
+);
 
 // ── Types ───────────────────────────────────────────────────────────
 interface Note {
@@ -208,7 +214,7 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
 
           {/* Push-pin */}
           <div style={{ position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
-            <motion.div animate={pinned ? { y: [-8, 2, 0], scale: [1.2, 0.9, 1] } : { y: 0 }} transition={pinned ? { duration: 0.4, times: [0, 0.6, 1] } : { type: 'spring', stiffness: 400, damping: 15 }}>
+            <motion.div animate={pinned ? { y: [-8, 2, 0], scale: [1.2, 0.9, 1] } : { y: 0 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
               <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #e55, #a00)', boxShadow: '0 2px 6px rgba(0,0,0,0.45), inset 0 1px 2px rgba(255,255,255,0.4)', margin: '0 auto' }} />
               <div style={{ width: 2, height: 10, background: 'linear-gradient(#c0392b99, transparent)', margin: '0 auto' }} />
             </motion.div>
@@ -268,21 +274,27 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
   );
 }
 
-// ── Tape Measure trigger ────────────────────────────────────────────
+// ── Tape Measure trigger (GLB model) ────────────────────────────────
 function WashiTapeRoll({ onClick }: { onClick: () => void; }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <motion.div
       className="absolute"
       style={{
-        bottom: '12%', left: '12%',
+        top: '35%', left: '42%',
+        rotate: '-8deg',
         zIndex: 200,
+        cursor: 'pointer',
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.6, type: 'spring', stiffness: 180, damping: 20 }}
     >
-      <TapeRoll3D />
+      <TapeRoll3D spinning={hovered} />
     </motion.div>
   );
 }
