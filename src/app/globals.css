@@ -11,6 +11,9 @@
   --accent-ink: #2c1810;
   --grain-opacity: 0.12;
   --vignette-opacity: 0.6;
+  --pin-color: #c0392b;
+  /* Original Red */
+  --pattern-bg: none;
 }
 
 @theme inline {
@@ -21,9 +24,67 @@
   --color-accent-sage: var(--accent-sage);
   --color-accent-rust: var(--accent-rust);
   --color-accent-cream: var(--accent-cream);
+  --pin-color: var(--pin-color);
   --font-sans: 'Space Grotesk', sans-serif;
   --font-serif: 'Playfair Display', serif;
   --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* =========================================
+   DYNAMIC HOLIDAY THEMES
+   Overrides root custom properties
+   ========================================= */
+
+/* Theme: Ramadan (Emerald & Vintage Gold) */
+.theme-ramadan {
+  --accent-sage: #2e593f;
+  /* Deep Emerald */
+  --accent-rust: #cfa85c;
+  /* Vintage Gold */
+  --accent-sepia: #8b6d36;
+  --pin-color: #cfa85c;
+  --pattern-bg: radial-gradient(circle, var(--accent-sage) 2px, transparent 2px);
+  /* Make the background ever so slightly green tinted */
+  --background: #141712 !important;
+}
+
+.theme-ramadan .ramadan-ornament {
+  display: block;
+}
+
+
+/* Theme: Christmas (Crimson & Pine) */
+.theme-christmas {
+  --accent-sage: #165b33;
+  /* Pine Green */
+  --accent-rust: #bb2528;
+  /* Crimson Red */
+  --accent-sepia: #8f1b1b;
+  --pattern-bg: radial-gradient(circle, var(--accent-sage) 2px, transparent 2px);
+  --background: #171515 !important;
+}
+
+/* Theme: New Year (Midnight Blue & Silver/Gold) */
+.theme-newyear {
+  --accent-sage: #1a2a40;
+  /* Midnight Blue */
+  --accent-rust: #d4af37;
+  /* Metallic Gold */
+  --accent-sepia: #a0a0a0;
+  /* Silver */
+  --pattern-bg: radial-gradient(circle, rgba(212, 175, 55, 0.2) 2px, transparent 2px);
+  --background: #101217 !important;
+}
+
+/* Theme: Lunar New Year (Ruby Red & Brass) */
+.theme-lunar {
+  --accent-sage: #c62828;
+  /* Ruby Red */
+  --accent-rust: #f9a825;
+  /* Brass/Gold */
+  --accent-sepia: #9e1b1b;
+  --pattern-bg: repeating-radial-gradient(circle at 0 0, transparent 0, var(--background) 20px, rgba(198, 40, 40, 0.05) 21px, rgba(198, 40, 40, 0.05) 22px);
+  --background: #1a1212 !important;
 }
 
 /* Hide default scrollbar */
@@ -438,4 +499,10 @@ body {
 .show-native-cursor,
 .show-native-cursor * {
   cursor: auto !important;
+}
+
+/* Dynamic Patterns */
+.pattern-overlay {
+  background-image: var(--pattern-bg);
+  background-size: 16px 16px;
 }

@@ -11,6 +11,7 @@ interface Note {
   role: string;
   message: string;
   color: string;
+  theme?: string; // Optional theme tag to render special cards
   rotate: number;
   pos_top: string;
   pos_left: string;
@@ -28,11 +29,11 @@ const SEED_CARDS: Note[] = [
 
 // ── Color map ───────────────────────────────────────────────────────
 const colorMap: Record<string, { bg: string; border: string; textColor: string; pin: string; }> = {
-  white: { bg: '#f8f4ed', border: '#e0d8cc', textColor: '#2a1a00', pin: '#c0392b' },
-  yellow: { bg: '#fff9c4', border: '#f0e060', textColor: '#2a1a00', pin: '#e67e22' },
-  blue: { bg: '#dce9f8', border: '#a8c8f0', textColor: '#1a3050', pin: '#2471a3' },
-  pink: { bg: '#fde8ee', border: '#f5b8cc', textColor: '#50101a', pin: '#8e44ad' },
-  green: { bg: '#e4f4e0', border: '#a8d8a0', textColor: '#0a2a10', pin: '#1a7a4a' },
+  white: { bg: '#f8f4ed', border: '#e0d8cc', textColor: '#2a1a00', pin: 'var(--pin-color)' },
+  yellow: { bg: '#fff9c4', border: '#f0e060', textColor: '#2a1a00', pin: 'var(--pin-color)' },
+  blue: { bg: '#dce9f8', border: '#a8c8f0', textColor: '#1a3050', pin: 'var(--pin-color)' },
+  pink: { bg: '#fde8ee', border: '#f5b8cc', textColor: '#50101a', pin: 'var(--pin-color)' },
+  green: { bg: '#e4f4e0', border: '#a8d8a0', textColor: '#0a2a10', pin: 'var(--pin-color)' },
 };
 
 // ── PushPin ─────────────────────────────────────────────────────────
@@ -99,15 +100,23 @@ function DraggableCard({ note, zBase, onFocus }: { note: Note; zBase: number; on
           transition: 'box-shadow 0.2s ease',
         }}
       >
+        {/* Dynamic Theme Pattern Overlay (Subtle) */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] pattern-overlay mix-blend-multiply" />
         <div className="absolute top-3 left-4 text-4xl leading-none opacity-20 select-none" style={{ color: textColor, fontFamily: 'Georgia, serif' }}>&#8220;</div>
 
-        <p className="text-sm leading-relaxed mb-4 mt-2 relative" style={{
+        <div className="text-sm leading-relaxed mb-4 mt-2 relative" style={{
           fontFamily: "'Caveat', cursive, var(--font-sans)",
           color: textColor,
           fontSize: 'clamp(0.82rem, 1.2vw, 0.95rem)',
         }}>
+          {/* Ramadan Special Ornament */}
+          <div className="absolute -top-6 right-0 opacity-20 pointer-events-none ramadan-ornament hidden">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </div>
           {note.message}
-        </p>
+        </div>
 
         <div className="w-full h-px mb-2 opacity-25" style={{ background: textColor }} />
         <p className="text-xs font-bold" style={{ fontFamily: 'var(--font-mono)', color: textColor, letterSpacing: '0.05em' }}>— {note.name}</p>
@@ -162,7 +171,7 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
     borderBottom: '1.5px solid rgba(42,26,0,0.2)', outline: 'none', resize: 'none',
     color: '#2a1a00', padding: '4px 0 6px', lineHeight: 2.05,
     fontFamily: "'Caveat', cursive, Georgia, serif", fontSize: 19,
-    caretColor: '#a0522d',
+    caretColor: 'var(--accent-rust)',
   };
 
   return (
@@ -209,8 +218,8 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
           {/* Push-pin */}
           <div style={{ position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
             <motion.div animate={pinned ? { y: [-8, 2, 0], scale: [1.2, 0.9, 1] } : { y: 0 }} transition={pinned ? { duration: 0.4, times: [0, 0.6, 1] } : { type: 'spring', stiffness: 400, damping: 15 }}>
-              <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #e55, #a00)', boxShadow: '0 2px 6px rgba(0,0,0,0.45), inset 0 1px 2px rgba(255,255,255,0.4)', margin: '0 auto' }} />
-              <div style={{ width: 2, height: 10, background: 'linear-gradient(#c0392b99, transparent)', margin: '0 auto' }} />
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, var(--pin-color), #555)', boxShadow: '0 2px 6px rgba(0,0,0,0.45), inset 0 1px 2px rgba(255,255,255,0.4)', margin: '0 auto' }} />
+              <div style={{ width: 2, height: 10, background: 'linear-gradient(var(--pin-color), transparent)', margin: '0 auto', opacity: 0.8 }} />
             </motion.div>
           </div>
 
@@ -239,7 +248,7 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
                 style={{ ...lineInput, lineHeight: 2.05 }} placeholder="Write something honest..." />
             </div>
 
-            {error && <p style={{ fontSize: 11, color: '#a0522d', fontFamily: 'var(--font-mono)', margin: 0 }}>↳ {error}</p>}
+            {error && <p style={{ fontSize: 11, color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)', margin: 0 }}>↳ {error}</p>}
 
             <motion.button
               type="submit" disabled={loading}
