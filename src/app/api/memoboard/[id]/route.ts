@@ -30,7 +30,8 @@ export async function DELETE(
     .eq('id', id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Supabase DELETE Error:', error);
+    return NextResponse.json({ error: 'Failed to delete note.' }, { status: 500 });
   }
   return NextResponse.json({ ok: true });
 }

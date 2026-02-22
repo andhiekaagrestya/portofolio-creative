@@ -24,6 +24,11 @@ function hashIp(ip: string): string {
   return createHash('sha256').update(ip + 'memoboard-salt').digest('hex').slice(0, 32);
 }
 
+// Basic input sanitization to strip out < and > to prevent stored XSS or injection
+function sanitize(str: string): string {
+  return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -41,7 +46,8 @@ export async function GET() {
     .limit(40);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Supabase GET Error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
   return NextResponse.json(data);
 }
@@ -56,10 +62,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true }); // Silently ignore
   }
 
-  // Validate fields
-  const name = (body.name ?? '').toString().trim().slice(0, 40);
-  const role = (body.role ?? '').toString().trim().slice(0, 60);
-  const message = (body.message ?? '').toString().trim().slice(0, 250);
+  // Validate and sanitize fields
+  const name = sanitize((body.name ?? '').toString().trim()).slice(0, 40);
+  const role = sanitize((body.role ?? '').toString().trim()).slice(0, 60);
+  const message = sanitize((body.message ?? '').toString().trim()).slice(0, 250);
 
   if (!name || !role || !message) {
     return NextResponse.json({ error: 'Nama, role, dan pesan wajib diisi.' }, { status: 400 });
@@ -109,7 +115,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Supabase POST Error:', error);
+    return NextResponse.json({ error: 'Failed to create note. Please try again.' }, { status: 500 });
   }
   return NextResponse.json(data, { status: 201 });
 }

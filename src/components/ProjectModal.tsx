@@ -11,6 +11,7 @@ interface ProjectModalProps {
   project: {
     title: string;
     description: string;
+    caseStudy?: React.ReactNode;
     image: string;
     tags: string[];
     color: string;
@@ -184,10 +185,16 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               <p className="font-mono text-xs md:text-sm leading-relaxed mb-6 border-l-2 border-[#1a1510] pl-4">
                 {project.description}
                 <br /><br />
-                <span className="opacity-60 italic">
-                  // Full case study data is currently classified.
-                  <br />// Accessing archival fragments...
-                </span>
+                {project.caseStudy ? (
+                  <span className="opacity-80 leading-relaxed block mt-2" style={{ fontFamily: 'var(--font-sans)' }}>
+                    {project.caseStudy}
+                  </span>
+                ) : (
+                  <span className="opacity-60 italic">
+                    // Full case study data is currently classified.
+                    <br />// Accessing archival fragments...
+                  </span>
+                )}
               </p>
 
               <div className="flex flex-wrap gap-2 mb-6">

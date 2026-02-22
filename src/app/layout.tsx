@@ -2,8 +2,37 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Andhieka Agrestya — Experimental Portfolio",
+  title: "Andhieka Agrestya — Experimental Portfolio | Fullstack Developer",
   description: "An experimental creative portfolio exploring collage animation, scrollytelling, and interactive physics. A journey through code, art, and banana molecules.",
+  keywords: [
+    "andhieka",
+    "dika",
+    "andhieka agrestya",
+    "agrestya",
+    "portfolio",
+    "creative developer",
+    "fullstack developer",
+    "frontend developer",
+    "react developer",
+    "nextjs developer",
+    "indonesia"
+  ],
+  authors: [{ name: "Andhieka Agrestya" }],
+  creator: "Andhieka Agrestya",
+  publisher: "Andhieka Agrestya",
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    title: "Andhieka Agrestya — Experimental Portfolio",
+    description: "An experimental creative portfolio exploring collage animation, scrollytelling, and interactive physics.",
+    siteName: "Andhieka Agrestya Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Andhieka Agrestya — Experimental Portfolio",
+    description: "An experimental creative portfolio exploring collage animation, scrollytelling, and interactive physics.",
+    creator: "@andhiekaagrestya",
+  },
 };
 
 export default function RootLayout({
