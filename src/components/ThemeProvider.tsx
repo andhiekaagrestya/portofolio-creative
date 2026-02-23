@@ -16,7 +16,8 @@ export default function ThemeProvider({ children }: { children: ReactNode; }) {
       </div>
       <HolidayDecorations theme={theme} />
 
-      {/* Theme Debug Toggle */}
+      {/* Theme Debug Toggle (Commented out for Production) */}
+      {/* 
       <div className="fixed bottom-4 right-4 z-[9999]">
         <button
           onClick={() => {
@@ -29,6 +30,7 @@ export default function ThemeProvider({ children }: { children: ReactNode; }) {
           Theme: {theme}
         </button>
       </div>
+      */}
     </>
   );
 }
