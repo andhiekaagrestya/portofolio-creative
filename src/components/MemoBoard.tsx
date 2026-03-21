@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 import TapeRoll3D from './TapeRoll3D';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 // ── Types ───────────────────────────────────────────────────────────
 interface Note {
@@ -15,16 +16,18 @@ interface Note {
   rotate: number;
   pos_top: string;
   pos_left: string;
+  pos_top_mobile?: string;
+  pos_left_mobile?: string;
   created_at: string;
 }
 
 // Seed cards shown while DB loads / as fallback
 const SEED_CARDS: Note[] = [
-  { id: 'seed-1', name: 'Rizky H.', role: 'Lead Engineer, Startup SaaS', message: 'Andhieka delivered a production-ready API under insane deadlines. Clean code, zero drama.', color: 'white', rotate: -5, pos_top: '6%', pos_left: '5%', created_at: '' },
-  { id: 'seed-2', name: 'Dinda P.', role: 'Product Manager', message: "He turned a half-baked Figma mockup into something I'd actually use. Fast, precise, creative.", color: 'pink', rotate: 4, pos_top: '4%', pos_left: '33%', created_at: '' },
-  { id: 'seed-3', name: 'Bimo S.', role: 'CTO, Fintech Startup', message: 'The kind of developer who asks the right questions before touching a single line of code.', color: 'blue', rotate: -7, pos_top: '5%', pos_left: '66%', created_at: '' },
-  { id: 'seed-4', name: 'Sera A.', role: 'UI/UX Designer', message: 'Rare to find a dev who actually respects the design spec AND improves it.', color: 'yellow', rotate: 6, pos_top: '52%', pos_left: '18%', created_at: '' },
-  { id: 'seed-5', name: 'Farhan M.', role: 'Freelance Client', message: 'Shipped in 3 days what another team quoted 3 weeks for. Genuinely impressive work.', color: 'green', rotate: -3, pos_top: '50%', pos_left: '62%', created_at: '' },
+  { id: 'seed-1', name: 'Rizky H.', role: 'Lead Engineer, Startup SaaS', message: 'Andhieka delivered a production-ready API under insane deadlines. Clean code, zero drama.', color: 'white', rotate: -5, pos_top: '6%', pos_left: '5%', pos_top_mobile: '3%', pos_left_mobile: '5%', created_at: '' },
+  { id: 'seed-2', name: 'Dinda P.', role: 'Product Manager', message: "He turned a half-baked Figma mockup into something I'd actually use. Fast, precise, creative.", color: 'pink', rotate: 4, pos_top: '4%', pos_left: '33%', pos_top_mobile: '3%', pos_left_mobile: '38%', created_at: '' },
+  { id: 'seed-3', name: 'Bimo S.', role: 'CTO, Fintech Startup', message: 'The kind of developer who asks the right questions before touching a single line of code.', color: 'blue', rotate: -7, pos_top: '5%', pos_left: '66%', pos_top_mobile: '35%', pos_left_mobile: '5%', created_at: '' },
+  { id: 'seed-4', name: 'Sera A.', role: 'UI/UX Designer', message: 'Rare to find a dev who actually respects the design spec AND improves it.', color: 'yellow', rotate: 6, pos_top: '52%', pos_left: '18%', pos_top_mobile: '35%', pos_left_mobile: '38%', created_at: '' },
+  { id: 'seed-5', name: 'Farhan M.', role: 'Freelance Client', message: 'Shipped in 3 days what another team quoted 3 weeks for. Genuinely impressive work.', color: 'green', rotate: -3, pos_top: '50%', pos_left: '62%', pos_top_mobile: '67%', pos_left_mobile: '5%', created_at: '' },
 ];
 
 // ── Color map ───────────────────────────────────────────────────────
@@ -55,7 +58,27 @@ function PushPin({ color, isDragging }: { color: string; isDragging: boolean; })
 }
 
 // ── DraggableCard ───────────────────────────────────────────────────
-function DraggableCard({ note, zBase, onFocus }: { note: Note; zBase: number; onFocus: () => void; }) {
+function DraggableCard({ note, zBase, onFocus, index, isMobile }: {
+  note: Note;
+  zBase: number;
+  onFocus: () => void;
+  index: number;
+  isMobile: boolean;
+}) {
+  const getPos = () => {
+    if (!isMobile) return { top: note.pos_top, left: note.pos_left };
+    if (note.pos_top_mobile && note.pos_left_mobile) {
+      return { top: note.pos_top_mobile, left: note.pos_left_mobile };
+    }
+    // Fallback 2-column grid for API-fetched notes (right col at 38% max for 320px safety)
+    const col = index % 2;
+    const row = Math.floor(index / 2);
+    return {
+      top: `${5 + row * 32}%`,
+      left: col === 0 ? '5%' : '38%',
+    };
+  };
+  const pos = getPos();
   const { bg, border, textColor, pin } = colorMap[note.color] ?? colorMap.white;
   const [isDragging, setIsDragging] = useState(false);
   const [localZ, setLocalZ] = useState(zBase);
@@ -75,8 +98,8 @@ function DraggableCard({ note, zBase, onFocus }: { note: Note; zBase: number; on
       onDragEnd={() => setIsDragging(false)}
       className="absolute touch-none"
       style={{
-        top: note.pos_top,
-        left: note.pos_left,
+        top: pos.top,
+        left: pos.left,
         rotate: isDragging ? note.rotate * 0.3 : note.rotate,
         zIndex: isDragging ? localZ + 100 : localZ,
         cursor: isDragging ? 'grabbing' : 'grab',
@@ -278,12 +301,13 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
 }
 
 // ── Tape Measure trigger ────────────────────────────────────────────
-function WashiTapeRoll({ onClick }: { onClick: () => void; }) {
+function WashiTapeRoll({ onClick, isMobile }: { onClick: () => void; isMobile: boolean; }) {
   return (
     <motion.div
       className="absolute"
       style={{
-        bottom: '12%', left: '12%',
+        bottom: isMobile ? '3%' : '12%',
+        left: isMobile ? '5%' : '12%',
         zIndex: 200,
       }}
       onClick={onClick}
@@ -302,6 +326,7 @@ export default function MemoBoard() {
   const [showForm, setShowForm] = useState(false);
   const [topZ, setTopZ] = useState(10);
   const [fetchedOnce, setFetchedOnce] = useState(false);
+  const { isMobile } = useMediaQuery();
 
   useEffect(() => {
     fetch('/api/memoboard')
@@ -333,12 +358,12 @@ export default function MemoBoard() {
 
       {/* Cards */}
       {notes.map((note, i) => (
-        <DraggableCard key={note.id} note={note} zBase={i + 2} onFocus={handleFocus} />
+        <DraggableCard key={note.id} note={note} zBase={i + 2} onFocus={handleFocus} index={i} isMobile={isMobile} />
       ))}
 
       {/* Washi Tape Roll trigger */}
       {fetchedOnce && (
-        <WashiTapeRoll onClick={() => setShowForm(true)} />
+        <WashiTapeRoll onClick={() => setShowForm(true)} isMobile={isMobile} />
       )}
 
       {/* Submit form modal */}
