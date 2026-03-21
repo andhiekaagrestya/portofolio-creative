@@ -169,7 +169,7 @@ export default function CollageElement({
         alt={alt}
         width={width}
         height={height}
-        className="pointer-events-none select-none"
+        className="pointer-events-none select-none w-full h-auto"
         style={{
           filter: 'saturate(1.2) contrast(1.05)',
         }}
