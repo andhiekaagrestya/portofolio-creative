@@ -488,7 +488,7 @@ export default function Home() {
                 <Image src="/collage/fragments-new.png" alt="physics fragments" width={140} height={140}
                   className="pointer-events-none select-none" />
               </div>
-              <div data-physics data-mass="0.6" className="absolute" style={{ top: '25%', left: '65%' }}>
+              <div data-physics data-mass="0.6" className="absolute" style={{ top: '20%', left: '65%' }}>
                 <Image src="/collage/books.png" alt="physics books" width={180} height={180}
                   className="pointer-events-none select-none" />
               </div>
@@ -496,7 +496,7 @@ export default function Home() {
                 <Image src="/collage/compass.png" alt="physics compass" width={150} height={150}
                   className="pointer-events-none select-none" />
               </div>
-              <div data-physics data-mass="0.9" className="absolute" style={{ top: '40%', left: '25%' }}>
+              <div data-physics data-mass="0.9" className="absolute" style={{ top: '35%', left: '25%' }}>
                 <div className="text-4xl md:text-6xl font-bold cursor-pointer transition-transform hover:scale-110" style={{
                   fontFamily: 'var(--font-serif)',
                   color: 'var(--accent-cream)',
@@ -506,7 +506,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div data-physics data-mass="1.5" className="absolute" style={{ top: '35%', right: '20%' }}>
+              <div data-physics data-mass="1.5" className="absolute" style={{ top: '30%', right: '20%' }}>
                 <div className="text-3xl md:text-5xl font-bold cursor-pointer transition-transform hover:scale-110" style={{
                   fontFamily: 'var(--font-serif)',
                   color: 'var(--accent-sepia)', // Changed from sepia to cream for visibility
@@ -1125,7 +1125,7 @@ export default function Home() {
                 <Image src="/collage/camera.png" alt="p2" width={150} height={150}
                   className="pointer-events-none select-none" />
               </div>
-              <div data-physics data-mass="1.3" className="absolute" style={{ top: '35%', left: '70%' }}>
+              <div data-physics data-mass="1.3" className="absolute" style={{ top: '25%', left: '70%' }}>
                 <div className="text-4xl md:text-6xl font-bold" style={{
                   fontFamily: 'var(--font-serif)',
                   color: 'var(--accent-rust)',
@@ -1137,7 +1137,7 @@ export default function Home() {
               <div data-physics data-mass="0.6" className="absolute" style={{ top: '30%', left: '15%' }}>
                 <div className="w-16 h-16 md:w-20 md:h-20 border rotate-45 opacity-20" style={{ borderColor: 'var(--accent-sepia)' }} />
               </div>
-              <div data-physics data-mass="0.9" className="absolute" style={{ top: '40%', left: '40%' }}>
+              <div data-physics data-mass="0.9" className="absolute" style={{ top: '30%', left: '40%' }}>
                 <Image src="/collage/fragments-new.png" alt="p3" width={120} height={120}
                   className="pointer-events-none select-none" />
               </div>
