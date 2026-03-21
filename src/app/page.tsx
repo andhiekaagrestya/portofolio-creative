@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import dynamic from 'next/dynamic';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -34,6 +35,11 @@ export default function Home() {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+
+  const { isMobile, isTablet } = useMediaQuery();
+
+  const sectionHeight = (mobile: string, tablet: string, desktop: string) =>
+    isMobile ? mobile : isTablet ? tablet : desktop;
 
   useEffect(() => {
     if (!mainRef.current) return;
@@ -113,6 +119,11 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    // Refresh ScrollTrigger after breakpoint resolves to fix stale trigger positions
+    ScrollTrigger.refresh();
+  }, [isMobile, isTablet]);
+
   const nameLine1 = 'Andhieka Agrestya';
   const nameLine2 = 'Al Ara Ab';
 
@@ -140,7 +151,7 @@ export default function Home() {
       <main ref={mainRef} className="relative" style={{ zIndex: 1 }}>
 
         {/* ==================== VOID / INTRO ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '120vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('80vh', '100vh', '120vh') }}>
           {/* Warm ambient light - like projector glow */}
           <div className="absolute w-[600px] h-[600px] rounded-full opacity-10"
             style={{ top: '20%', left: '20%', background: 'radial-gradient(circle, rgba(196,149,106,0.4), transparent)', filter: 'blur(80px)' }} />
@@ -237,7 +248,7 @@ export default function Home() {
         </div>
 
         {/* ==================== ORIGIN / CHAPTER 1 ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '200vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('130vh', '160vh', '200vh') }}>
           {/* --- BACKGROUND LAYER (Deep, Slow) --- */}
           <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
             {/* Warm projector glow */}
@@ -401,7 +412,7 @@ export default function Home() {
         </div>
 
         {/* ==================== GROWTH / CHAPTER 2 ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '220vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('140vh', '180vh', '220vh') }}>
           {/* --- BACKGROUND LAYER --- */}
           <DioramaLayer speed={0.5} className="z-0" fadeOnScroll>
             <div className="absolute w-[500px] h-[500px] rounded-full opacity-8"
@@ -633,7 +644,7 @@ export default function Home() {
         </div>
 
         {/* ==================== MANIFESTO ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '180vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('120vh', '150vh', '180vh') }}>
 
           {/* Heavy paper texture background */}
           <div className="absolute inset-0 pointer-events-none"
@@ -802,7 +813,7 @@ export default function Home() {
         </div>
 
         {/* ==================== FOUND FOOTAGE / VHS ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '160vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('110vh', '140vh', '160vh') }}>
 
           {/* VHS scanlines overlay */}
           <div
@@ -969,7 +980,7 @@ export default function Home() {
         </div>
 
         {/* ==================== MASTERY / CHAPTER 3 ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '250vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('160vh', '200vh', '250vh') }}>
           <div className="absolute w-[600px] h-[600px] rounded-full opacity-8"
             style={{ top: '10%', left: '10%', background: 'radial-gradient(circle, rgba(196,149,106,0.25), transparent)', filter: 'blur(120px)' }} />
 
@@ -1216,7 +1227,7 @@ export default function Home() {
         </div>
 
         {/* ==================== PROCESS / KITCHEN SINK ==================== */}
-        <div className="relative overflow-hidden" style={{ height: '280vh' }}>
+        <div className="relative overflow-hidden" style={{ height: sectionHeight('180vh', '230vh', '280vh') }}>
 
           {/* Ambient warm glow */}
           <div className="absolute w-[800px] h-[800px] rounded-full pointer-events-none"
