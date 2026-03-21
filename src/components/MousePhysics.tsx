@@ -116,13 +116,36 @@ export default function MousePhysics({
       animFrameRef.current = requestAnimationFrame(animate);
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      mouseRef.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      mouseRef.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      // Update position from last touch, then trigger explosion
+      const touch = e.changedTouches[0];
+      mouseRef.current = { x: touch.clientX, y: touch.clientY };
+      handleClick();
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('click', handleClick);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
     animFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('click', handleClick);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       cancelAnimationFrame(animFrameRef.current);
     };
   }, [radius, strength, springStiffness, damping]);
