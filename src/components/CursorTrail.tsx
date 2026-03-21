@@ -1,14 +1,22 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CursorTrail() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const trailsRef = useRef<HTMLDivElement[]>([]);
   const mousePos = useRef({ x: -100, y: -100 });
   const cursorPos = useRef({ x: -100, y: -100 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      setIsTouchDevice(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isTouchDevice) return;
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
     };
@@ -47,7 +55,9 @@ export default function CursorTrail() {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   return (
     <>
