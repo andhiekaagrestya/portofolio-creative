@@ -291,7 +291,7 @@ export default function Home() {
 
             <ScatteredText
               text="curiosity drove everything"
-              style={{ top: '30%', left: '55%', rotate: '5deg', fontSize: 'clamp(1rem, 2vw, 1.5rem)' }}
+              style={{ top: '30%', left: isMobile ? '8%' : '55%', rotate: '5deg', fontSize: 'clamp(1rem, 2vw, 1.5rem)' }}
               font="sans"
               weight="300"
               italic
@@ -365,15 +365,17 @@ export default function Home() {
             animateFrom="bottom"
           />
 
-          <ScatteredText
-            text="late nights. broken code. breakthrough."
-            style={{ top: '75%', right: '5%', rotate: '3deg', fontSize: 'clamp(0.9rem, 1.8vw, 1.3rem)' }}
-            font="sans"
-            weight="300"
-            color="var(--foreground)"
-            animationType="fade"
-            zIndex={4}
-          />
+          <div className="hidden md:block">
+            <ScatteredText
+              text="late nights. broken code. breakthrough."
+              style={{ top: '75%', right: '5%', rotate: '3deg', fontSize: 'clamp(0.9rem, 1.8vw, 1.3rem)' }}
+              font="sans"
+              weight="300"
+              color="var(--foreground)"
+              animationType="fade"
+              zIndex={4}
+            />
+          </div>
 
           <CollageElement
             src="/collage/banana-plant.png"
@@ -453,13 +455,15 @@ export default function Home() {
               animationType="fade"
             />
 
-            <ScatteredText
-              text="npm install everything"
-              style={{ top: '20%', right: '5%', rotate: '4deg', fontSize: 'clamp(0.7rem, 1.2vw, 1rem)' }}
-              font="mono"
-              color="var(--accent-sepia)"
-              animationType="typewriter"
-            />
+            <div className="hidden md:block">
+              <ScatteredText
+                text="npm install everything"
+                style={{ top: '20%', right: '5%', rotate: '4deg', fontSize: 'clamp(0.7rem, 1.2vw, 1rem)' }}
+                font="mono"
+                color="var(--accent-sepia)"
+                animationType="typewriter"
+              />
+            </div>
           </DioramaLayer>
 
           {/* --- FOREGROUND LAYER --- */}
@@ -486,7 +490,7 @@ export default function Home() {
           >
             <div className="relative w-full h-full">
               <ScatteredText
-                text="PUSH ME AROUND"
+                text={isMobile ? "TAP ME AROUND" : "PUSH ME AROUND"}
                 style={{ top: '5%', left: '50%', fontSize: 'clamp(0.6rem, 1vw, 0.8rem)' }}
                 font="mono"
                 color="var(--accent-warm)"
@@ -570,13 +574,15 @@ export default function Home() {
             }}
           />
 
-          <ScatteredText
-            text="const growth = iterate(learn, build, ship);"
-            style={{ top: '92%', left: '5%', rotate: '1deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
-            font="mono"
-            color="var(--accent-sage)"
-            animationType="typewriter"
-          />
+          <div className="hidden md:block">
+            <ScatteredText
+              text="const growth = iterate(learn, build, ship);"
+              style={{ top: '92%', left: '5%', rotate: '1deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
+              font="mono"
+              color="var(--accent-sage)"
+              animationType="typewriter"
+            />
+          </div>
           {/* Hand-drawn connector: Chapter 2 → Selected Works */}
           <HandDrawnSVG
             preset="spiral"
@@ -781,7 +787,7 @@ export default function Home() {
           />
           <ScatteredText
             text="Code that lasts."
-            style={{ top: '72%', left: '55%', rotate: '-2deg', fontSize: 'clamp(1.5rem, 4vw, 3.5rem)' }}
+            style={{ top: '72%', left: isMobile ? '10%' : '55%', rotate: '-2deg', fontSize: 'clamp(1.5rem, 4vw, 3.5rem)' }}
             font="serif"
             weight="300"
             italic
@@ -935,16 +941,18 @@ export default function Home() {
             animationType="fade"
             zIndex={13}
           />
-          <ScatteredText
-            text="the best bugs become the best stories"
-            style={{ top: '74%', right: '8%', rotate: '-2deg', fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)' }}
-            font="sans"
-            weight="300"
-            italic
-            color="var(--accent-sepia)"
-            animationType="fade"
-            zIndex={13}
-          />
+          <div className="hidden md:block">
+            <ScatteredText
+              text="the best bugs become the best stories"
+              style={{ top: '74%', right: '8%', rotate: '-2deg', fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)' }}
+              font="sans"
+              weight="300"
+              italic
+              color="var(--accent-sepia)"
+              animationType="fade"
+              zIndex={13}
+            />
+          </div>
 
           {/* VHS static at top */}
           <div
@@ -1099,13 +1107,15 @@ export default function Home() {
             zIndex={7}
           />
 
-          <ScatteredText
-            text="async function buildTheFuture() {"
-            style={{ top: '42%', right: '10%', rotate: '3deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
-            font="mono"
-            color="var(--accent-sage)"
-            animationType="typewriter"
-          />
+          <div className="hidden md:block">
+            <ScatteredText
+              text="async function buildTheFuture() {"
+              style={{ top: '42%', right: '10%', rotate: '3deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
+              font="mono"
+              color="var(--accent-sage)"
+              animationType="typewriter"
+            />
+          </div>
 
           {/* Second Mouse Physics Zone */}
           <MousePhysics
@@ -1118,7 +1128,7 @@ export default function Home() {
           >
             <div className="relative w-full h-full">
               <ScatteredText
-                text="← click to explode →"
+                text={isMobile ? "↓ tap to explode ↓" : "← click to explode →"}
                 style={{ top: '0%', left: '35%', fontSize: 'clamp(0.6rem, 1vw, 0.8rem)' }}
                 font="mono"
                 color="var(--accent-sepia)"
@@ -1202,13 +1212,15 @@ export default function Home() {
             animationType="fade"
           />
 
-          <ScatteredText
-            text="return { experience: infinite };"
-            style={{ top: '93%', right: '8%', rotate: '-2deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
-            font="mono"
-            color="var(--accent-sage)"
-            animationType="typewriter"
-          />
+          <div className="hidden md:block">
+            <ScatteredText
+              text="return { experience: infinite };"
+              style={{ top: '93%', right: '8%', rotate: '-2deg', fontSize: 'clamp(0.6rem, 1vw, 0.9rem)' }}
+              font="mono"
+              color="var(--accent-sage)"
+              animationType="typewriter"
+            />
+          </div>
           {/* Hand-drawn connector: Chapter 3 → Chapter 4 */}
           <HandDrawnSVG
             preset="arrowCurve"
