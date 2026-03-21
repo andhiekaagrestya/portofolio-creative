@@ -209,8 +209,8 @@ export default function Home() {
             alt="Banana Plant Sketch"
             width={200}
             height={200}
-            className="w-[180px] md:w-[350px]"
-            style={{ top: '15%', right: '5%', rotate: '12deg', zIndex: 3 }}
+            className="w-[120px] md:w-[350px]"
+            style={{ top: isMobile ? '8%' : '15%', right: isMobile ? '2%' : '5%', rotate: '12deg', zIndex: 3 }}
             parallaxSpeed={0.3}
             animateFrom="right"
           />
@@ -219,8 +219,8 @@ export default function Home() {
             alt="Vintage Camera"
             width={200}
             height={200}
-            className="w-[180px] md:w-[350px]"
-            style={{ bottom: '25%', left: '5%', rotate: '-8deg', zIndex: 2 }}
+            className="w-[120px] md:w-[350px]"
+            style={{ bottom: isMobile ? '20%' : '25%', left: isMobile ? '2%' : '5%', rotate: '-8deg', zIndex: 2 }}
             parallaxSpeed={0.5}
             animateFrom="left"
           />
@@ -312,15 +312,17 @@ export default function Home() {
 
           {/* --- FOREGROUND LAYER (Close, Fast, Blurred) --- */}
           <DioramaLayer speed={1.8} className="z-[10]">
-            <CollageElement
-              src="/collage/fragments-new.png"
-              alt="Fragments"
-              width={450} // Made larger to emphasize foreground
-              height={450}
-              style={{ top: '35%', right: '-5%', rotate: '15deg', zIndex: 10, filter: 'blur(4px)' }} // Blur applies depth of field
-              parallaxSpeed={0} // Disable internal parallax
-              animateFrom="right"
-            />
+            <div className="hidden md:block">
+              <CollageElement
+                src="/collage/fragments-new.png"
+                alt="Fragments"
+                width={450} // Made larger to emphasize foreground
+                height={450}
+                style={{ top: '35%', right: '-5%', rotate: '15deg', zIndex: 10, filter: 'blur(4px)' }} // Blur applies depth of field
+                parallaxSpeed={0} // Disable internal parallax
+                animateFrom="right"
+              />
+            </div>
           </DioramaLayer>
 
           {/* Hand-drawn squiggle near the spark */}
@@ -467,6 +469,7 @@ export default function Home() {
               alt="Compass"
               width={400}
               height={400}
+              className="w-[150px] md:w-[400px]"
               style={{ top: '12%', left: '30%', rotate: '-7deg', zIndex: 10, filter: 'blur(2px)' }}
               parallaxSpeed={0}
               animateFrom="scale"
@@ -960,6 +963,7 @@ export default function Home() {
             alt="found footage camera"
             width={220}
             height={220}
+            className="w-[100px] md:w-[220px]"
             style={{ top: '58%', right: '5%', rotate: '-8deg', zIndex: 8, opacity: 0.4, filter: 'saturate(0.3) brightness(0.6)' }}
             parallaxSpeed={0.3}
             animateFrom="right"
@@ -1037,33 +1041,39 @@ export default function Home() {
             animateFrom="right"
             magnetic
           />
-          <CollageElement
-            src="/collage/typewriter.png"
-            alt="Mastery 4"
-            width={200}
-            height={200}
-            style={{ top: '25%', left: '50%', rotate: '18deg', zIndex: 2 }}
-            parallaxSpeed={0.4}
-            animateFrom="bottom"
-          />
-          <CollageElement
-            src="/collage/camera.png"
-            alt="Mastery 5"
-            width={240}
-            height={240}
-            style={{ top: '22%', left: '20%', rotate: '-3deg', zIndex: 6 }}
-            parallaxSpeed={0.6}
-            animateFrom="top"
-          />
-          <CollageElement
-            src="/collage/fragments-new.png"
-            alt="Mastery 6"
-            width={180}
-            height={180}
-            style={{ top: '28%', right: '30%', rotate: '22deg', zIndex: 4 }}
-            parallaxSpeed={0.8}
-            animateFrom="scale"
-          />
+          <div className="hidden md:block">
+            <CollageElement
+              src="/collage/typewriter.png"
+              alt="Mastery 4"
+              width={200}
+              height={200}
+              style={{ top: '25%', left: '50%', rotate: '18deg', zIndex: 2 }}
+              parallaxSpeed={0.4}
+              animateFrom="bottom"
+            />
+          </div>
+          <div className="hidden md:block">
+            <CollageElement
+              src="/collage/camera.png"
+              alt="Mastery 5"
+              width={240}
+              height={240}
+              style={{ top: '22%', left: '20%', rotate: '-3deg', zIndex: 6 }}
+              parallaxSpeed={0.6}
+              animateFrom="top"
+            />
+          </div>
+          <div className="hidden md:block">
+            <CollageElement
+              src="/collage/fragments-new.png"
+              alt="Mastery 6"
+              width={180}
+              height={180}
+              style={{ top: '28%', right: '30%', rotate: '22deg', zIndex: 4 }}
+              parallaxSpeed={0.8}
+              animateFrom="scale"
+            />
+          </div>
 
           {/* Hand-drawn underline for mastery text */}
           <HandDrawnSVG
