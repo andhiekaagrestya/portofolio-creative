@@ -16,6 +16,9 @@ import DNAHelix from '@/components/DNAHelix';
 import StickyNote from '@/components/StickyNote';
 import WashiTape from '@/components/WashiTape';
 import MemoBoard from '@/components/MemoBoard';
+import { TapeRoll3D } from '@/components/TapeRoll3D-ModelReal';
+import HolidayDecorations from '@/components/HolidayDecorations';
+import { UsbDriveDownload } from '@/components/UsbDriveDownload';
 
 // Dynamic imports for browser-only components (no SSR to fix hydration)
 const ParticleField = dynamic(() => import('@/components/ParticleField'), { ssr: false });
@@ -539,22 +542,22 @@ export default function Home() {
             magnetic
           />
 
-          <HoverMorphText
-            text="STACKING"
-            className="reveal-text"
-            font="serif"
-            weight={900}
-            color="var(--accent-rust)"
-            italicHover
-            style={{
-              position: 'absolute',
-              top: '82%',
-              left: '50%',
-              rotate: '12deg',
-              fontSize: 'clamp(5rem, 12vw, 10rem)',
-              zIndex: 6
-            }}
-          />
+          <div
+            className="absolute left-[35%] md:left-[47%]"
+            style={{ top: '82%', rotate: '12deg', zIndex: 6 }}
+          >
+            <HoverMorphText
+              text="STACKING"
+              className="reveal-text"
+              font="serif"
+              weight={900}
+              color="var(--accent-rust)"
+              italicHover
+              style={{
+                fontSize: 'clamp(2.5rem, 12vw, 10rem)',
+              }}
+            />
+          </div>
 
           <ScatteredText
             text="const growth = iterate(learn, build, ship);"
@@ -1683,6 +1686,13 @@ export default function Home() {
               animationType="split"
               zIndex={5}
             />
+
+            {/* USB Flash Drive CV Download */}
+            <div className="absolute z-20" style={{ top: '15%', right: '10%' }}>
+              <div className="scale-75 md:scale-100 origin-center">
+                <UsbDriveDownload />
+              </div>
+            </div>
 
             <ScatteredText
               text="hello@nanobanana.dev"
