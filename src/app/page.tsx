@@ -541,7 +541,7 @@ export default function Home() {
           />
 
           <div
-            className="absolute left-[35%] md:left-[47%]"
+            className="absolute left-[35%] md:left-[41%]"
             style={{ top: '82%', rotate: '12deg', zIndex: 6 }}
           >
             <HoverMorphText
@@ -1693,7 +1693,7 @@ export default function Home() {
             </div> */}
 
             <ScatteredText
-              text="hello@nanobanana.dev"
+              text="andhiekaagrestya.netlify.app"
               style={{ top: '30%', left: '20%', rotate: '3deg', fontSize: 'clamp(1rem, 2.5vw, 2rem)' }}
               font="mono"
               color="var(--accent-warm)"
