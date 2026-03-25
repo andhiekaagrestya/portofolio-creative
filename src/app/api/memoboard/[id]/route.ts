@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-function getAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+import sql from '@/lib/db';
 
 // ── DELETE — admin removes a note by ID ───────────────────────────
 export async function DELETE(
@@ -23,15 +16,7 @@ export async function DELETE(
   const { id } = await params;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-  const sb = getAdminClient();
-  const { error } = await sb
-    .from('memoboard_notes')
-    .delete()
-    .eq('id', id);
+  await sql`DELETE FROM memoboard_notes WHERE id = ${id}`;
 
-  if (error) {
-    console.error('Supabase DELETE Error:', error);
-    return NextResponse.json({ error: 'Failed to delete note.' }, { status: 500 });
-  }
   return NextResponse.json({ ok: true });
 }

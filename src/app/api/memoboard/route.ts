@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'crypto';
+import sql from '@/lib/db';
 
 const COLORS = ['white', 'yellow', 'blue', 'pink', 'green'] as const;
 const ROTATES = [-8, -6, -4, -2, 2, 4, 6, 8];
@@ -29,26 +29,15 @@ function sanitize(str: string): string {
   return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
-
 // ── GET — fetch all notes ──────────────────────────────────────────
 export async function GET() {
-  const sb = getSupabase();
-  const { data, error } = await sb
-    .from('memoboard_notes')
-    .select('id, name, role, message, color, rotate, pos_top, pos_left, created_at')
-    .order('created_at', { ascending: false })
-    .limit(40);
+  const data = await sql`
+    SELECT id, name, role, message, color, rotate, pos_top, pos_left, created_at
+    FROM memoboard_notes
+    ORDER BY created_at DESC
+    LIMIT 40
+  `;
 
-  if (error) {
-    console.error('Supabase GET Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
   return NextResponse.json(data);
 }
 
@@ -79,15 +68,14 @@ export async function POST(req: NextRequest) {
   const ip = forwarded.split(',')[0].trim();
   const ipHash = hashIp(ip);
 
-  const sb = getSupabase();
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { count } = await sb
-    .from('memoboard_notes')
-    .select('id', { count: 'exact', head: true })
-    .eq('ip_hash', ipHash)
-    .gte('created_at', since);
+  const [{ count }] = await sql`
+    SELECT COUNT(*)::int AS count
+    FROM memoboard_notes
+    WHERE ip_hash = ${ipHash} AND created_at >= ${since}
+  `;
 
-  if ((count ?? 0) >= 2) {
+  if (count >= 2) {
     return NextResponse.json(
       { error: 'Kamu sudah submit 2 kali hari ini. Coba lagi besok!' },
       { status: 429 }
@@ -99,24 +87,11 @@ export async function POST(req: NextRequest) {
   const color = pick(COLORS);
   const rotate = pick(ROTATES);
 
-  const { data, error } = await sb
-    .from('memoboard_notes')
-    .insert({
-      name,
-      role,
-      message,
-      ip_hash: ipHash,
-      color,
-      rotate,
-      pos_top: pos.pos_top,
-      pos_left: pos.pos_left,
-    })
-    .select('id, name, role, message, color, rotate, pos_top, pos_left, created_at')
-    .single();
+  const [data] = await sql`
+    INSERT INTO memoboard_notes (name, role, message, ip_hash, color, rotate, pos_top, pos_left)
+    VALUES (${name}, ${role}, ${message}, ${ipHash}, ${color}, ${rotate}, ${pos.pos_top}, ${pos.pos_left})
+    RETURNING id, name, role, message, color, rotate, pos_top, pos_left, created_at
+  `;
 
-  if (error) {
-    console.error('Supabase POST Error:', error);
-    return NextResponse.json({ error: 'Failed to create note. Please try again.' }, { status: 500 });
-  }
   return NextResponse.json(data, { status: 201 });
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, useAnimationFrame, useSpring, useMotionValue, useTransform } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, useAnimationFrame, useMotionValue } from 'framer-motion';
 
 interface MarqueeStripProps {
   texts: string[]; // List of strings to display
@@ -85,7 +85,7 @@ function MarqueeScroller({ children, speed, direction }: { children: React.React
 
 const GLYPHS = '01xy#_@-+=/\\';
 
-function SineChar({ char, index, total }: { char: string, index: number, total: number; }) {
+function SineChar({ char, index }: { char: string, index: number, total: number; }) {
   const [displayChar, setDisplayChar] = useState(char);
   const y = useMotionValue(0);
   const opacity = useMotionValue(1);
@@ -140,6 +140,7 @@ function SineChar({ char, index, total }: { char: string, index: number, total: 
 
   useEffect(() => {
     if (!isGlitching) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayChar(char);
       return;
     }
@@ -153,7 +154,7 @@ function SineChar({ char, index, total }: { char: string, index: number, total: 
   return (
     <motion.span
       style={{ y, opacity }}
-      className={`inline-block ${char === '•' ? 'text-[var(--accent-sepia)] mx-2' : ''}`}
+      className={`inline-block ${char === '•' ? 'text-(--accent-sepia) mx-2' : ''}`}
     >
       {char === ' ' ? '\u00A0' : displayChar}
     </motion.span>

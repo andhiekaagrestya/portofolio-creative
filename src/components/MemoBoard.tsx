@@ -40,7 +40,7 @@ const colorMap: Record<string, { bg: string; border: string; textColor: string; 
 function PushPin({ color, isDragging }: { color: string; isDragging: boolean; }) {
   return (
     <motion.div
-      className="absolute top-[-14px] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center"
+      className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center"
       style={{ filter: 'drop-shadow(0 3px 4px rgba(0,0,0,0.35))' }}
       animate={isDragging ? { y: -6, scale: 1.15 } : { y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -49,7 +49,7 @@ function PushPin({ color, isDragging }: { color: string; isDragging: boolean; })
         background: `radial-gradient(circle at 38% 35%, ${color}dd, ${color})`,
         boxShadow: `0 2px 4px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.4)`,
       }} />
-      <div className="w-[2px] h-4" style={{ background: `linear-gradient(to bottom, ${color}99, #88888880, transparent)` }} />
+      <div className="w-0.5 h-4" style={{ background: `linear-gradient(to bottom, ${color}99, #88888880, transparent)` }} />
     </motion.div>
   );
 }
@@ -90,7 +90,7 @@ function DraggableCard({ note, zBase, onFocus }: { note: Note; zBase: number; on
       <PushPin color={pin} isDragging={isDragging} />
 
       <div
-        className="relative pt-6 px-5 pb-5 w-[190px] md:w-[215px] select-none"
+        className="relative pt-6 px-5 pb-5 w-47.5 md:w-53.75 select-none"
         style={{
           background: bg,
           border: `1px solid ${border}`,
@@ -180,7 +180,7 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 flex items-center justify-center z-[9995] px-4"
+      className="fixed inset-0 flex items-center justify-center z-9995 px-4"
       style={{ backdropFilter: 'blur(6px)', background: 'rgba(8,6,3,0.65)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
@@ -189,7 +189,7 @@ function AddNoteForm({ onAdded, onClose }: { onAdded: (note: Note) => void; onCl
         animate={{ y: 0, rotate: pinned ? 0 : -1, opacity: 1 }}
         exit={{ y: 40, rotate: 4, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 240, damping: 22 }}
-        className="relative w-full max-w-[420px]"
+        className="relative w-full max-w-105"
         onClick={(e) => e.stopPropagation()}
         style={{ filter: 'drop-shadow(0 24px 60px rgba(0,0,0,0.6))' }}
       >
@@ -300,7 +300,7 @@ function WashiTapeRoll({ onClick }: { onClick: () => void; }) {
 export default function MemoBoard() {
   const [notes, setNotes] = useState<Note[]>(SEED_CARDS);
   const [showForm, setShowForm] = useState(false);
-  const [topZ, setTopZ] = useState(10);
+  const [, setTopZ] = useState(10);
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
   useEffect(() => {
