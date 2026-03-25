@@ -16,7 +16,7 @@ import DNAHelix from '@/components/DNAHelix';
 import StickyNote from '@/components/StickyNote';
 import WashiTape from '@/components/WashiTape';
 import MemoBoard from '@/components/MemoBoard';
-import { UsbDriveDownload } from '@/components/UsbDriveDownload';
+// import { UsbDriveDownload } from '@/components/UsbDriveDownload';
 
 // Dynamic imports for browser-only components (no SSR to fix hydration)
 const ParticleField = dynamic(() => import('@/components/ParticleField'), { ssr: false });
@@ -1686,11 +1686,11 @@ export default function Home() {
             />
 
             {/* USB Flash Drive CV Download */}
-            <div className="absolute z-20" style={{ top: '15%', right: '10%' }}>
+            {/* <div className="absolute z-20" style={{ top: '15%', right: '10%' }}>
               <div className="scale-75 md:scale-100 origin-center">
                 <UsbDriveDownload />
               </div>
-            </div>
+            </div> */}
 
             <ScatteredText
               text="hello@nanobanana.dev"
