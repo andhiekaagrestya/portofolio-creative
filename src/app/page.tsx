@@ -137,7 +137,7 @@ export default function Home() {
       <AmbientSound />
       <ScannerEffect />
       {/* Scroll progress */}
-      <div className="fixed top-0 left-0 w-full h-[2px] z-[100]">
+      <div className="fixed top-0 left-0 w-full h-0.5 z-100">
         <div
           ref={progressRef}
           className="h-full origin-left"
@@ -153,7 +153,7 @@ export default function Home() {
         {/* ==================== VOID / INTRO ==================== */}
         <div className="relative overflow-hidden" style={{ height: sectionHeight('80vh', '100vh', '120vh') }}>
           {/* Warm ambient light - like projector glow */}
-          <div className="absolute w-[600px] h-[600px] rounded-full opacity-10"
+          <div className="absolute w-150 h-150 rounded-full opacity-10"
             style={{ top: '20%', left: '20%', background: 'radial-gradient(circle, rgba(196,149,106,0.4), transparent)', filter: 'blur(80px)' }} />
 
           {/* Main title */}
@@ -209,7 +209,7 @@ export default function Home() {
             alt="Banana Plant Sketch"
             width={200}
             height={200}
-            className="w-[120px] md:w-[350px]"
+            className="w-30 md:w-87.5"
             style={{ top: isMobile ? '8%' : '15%', right: isMobile ? '2%' : '5%', rotate: '12deg', zIndex: 3 }}
             parallaxSpeed={0.3}
             animateFrom="right"
@@ -219,7 +219,7 @@ export default function Home() {
             alt="Vintage Camera"
             width={200}
             height={200}
-            className="w-[120px] md:w-[350px]"
+            className="w-30 md:w-87.5"
             style={{ bottom: isMobile ? '20%' : '25%', left: isMobile ? '2%' : '5%', rotate: '-8deg', zIndex: 2 }}
             parallaxSpeed={0.5}
             animateFrom="left"
@@ -252,7 +252,7 @@ export default function Home() {
           {/* --- BACKGROUND LAYER (Deep, Slow) --- */}
           <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
             {/* Warm projector glow */}
-            <div className="absolute w-[500px] h-[500px] rounded-full opacity-8"
+            <div className="absolute w-125 h-125 rounded-full opacity-8"
               style={{ top: '30%', left: '40%', background: 'radial-gradient(circle, rgba(139,105,20,0.3), transparent)', filter: 'blur(100px)' }} />
 
             <CollageElement // Restored opening tag
@@ -260,7 +260,7 @@ export default function Home() {
               alt="Typewriter"
               width={200}
               height={200}
-              className="w-[120px] md:w-[350px] !top-[60%] !left-[5%] md:!top-[18%] md:!left-[15%]"
+              className="w-30 md:w-87.5 top-[60%]! left-[5%]! md:top-[18%]! md:left-[15%]!"
               style={{ rotate: '-5deg', zIndex: 1 }}
               parallaxSpeed={0} // Disable internal parallax to let DioramaLayer handle it
               animateFrom="left"
@@ -269,7 +269,7 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- MIDGROUND LAYER (Normal Speed, Main Content) --- */}
-          <DioramaLayer speed={1} className="z-[5]">
+          <DioramaLayer speed={1} className="z-5">
             <ScatteredText
               text="WHERE IT ALL BEGAN"
               style={{ top: '5%', left: '10%', rotate: '-3deg', fontSize: 'clamp(2rem, 5vw, 4rem)' }}
@@ -311,7 +311,7 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- FOREGROUND LAYER (Close, Fast, Blurred) --- */}
-          <DioramaLayer speed={1.8} className="z-[10]">
+          <DioramaLayer speed={1.8} className="z-10">
             <div className="hidden md:block">
               <CollageElement
                 src="/collage/fragments-new.png"
@@ -359,7 +359,7 @@ export default function Home() {
             alt="Books"
             width={200}
             height={200}
-            className="w-[120px] md:w-[350px] !top-[75%] !left-[60%] md:!top-[60%] md:!left-[60%]"
+            className="w-30 md:w-87.5 top-[75%]! left-[60%]! md:top-[60%]! md:left-[60%]!"
             style={{ rotate: '8deg', zIndex: 2 }}
             parallaxSpeed={0.6}
             animateFrom="bottom"
@@ -419,7 +419,7 @@ export default function Home() {
         <div className="relative overflow-hidden" style={{ height: sectionHeight('140vh', '180vh', '220vh') }}>
           {/* --- BACKGROUND LAYER --- */}
           <DioramaLayer speed={0.5} className="z-0" fadeOnScroll>
-            <div className="absolute w-[500px] h-[500px] rounded-full opacity-8"
+            <div className="absolute w-125 h-125 rounded-full opacity-8"
               style={{ top: '20%', right: '20%', background: 'radial-gradient(circle, rgba(107,124,94,0.3), transparent)', filter: 'blur(100px)' }} />
 
             <CollageElement
@@ -434,7 +434,7 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- MIDGROUND LAYER --- */}
-          <DioramaLayer speed={0.9} className="z-[5]">
+          <DioramaLayer speed={0.9} className="z-5">
             <ScatteredText
               text="EVOLUTION"
               style={{ top: '3%', right: '8%', rotate: '6deg', fontSize: 'clamp(4rem, 10vw, 9rem)' }}
@@ -467,13 +467,13 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- FOREGROUND LAYER --- */}
-          <DioramaLayer speed={1.5} className="z-[10]">
+          <DioramaLayer speed={1.5} className="z-10">
             <CollageElement
               src="/collage/compass.png"
               alt="Compass"
               width={400}
               height={400}
-              className="w-[150px] md:w-[400px]"
+              className="w-37.5 md:w-100"
               style={{ top: '12%', left: '30%', rotate: '-7deg', zIndex: 10, filter: 'blur(2px)' }}
               parallaxSpeed={0}
               animateFrom="scale"
@@ -663,7 +663,7 @@ export default function Home() {
           />
 
           {/* Ink bleed ambient glow */}
-          <div className="absolute w-full h-[2px] left-0 pointer-events-none"
+          <div className="absolute w-full h-0.5 left-0 pointer-events-none"
             style={{ top: '35%', background: 'linear-gradient(90deg, transparent, rgba(196,149,106,0.08), transparent)', filter: 'blur(20px)' }}
           />
 
@@ -971,7 +971,7 @@ export default function Home() {
             alt="found footage camera"
             width={220}
             height={220}
-            className="w-[100px] md:w-[220px]"
+            className="w-25 md:w-55"
             style={{ top: '58%', right: '5%', rotate: '-8deg', zIndex: 8, opacity: 0.4, filter: 'saturate(0.3) brightness(0.6)' }}
             parallaxSpeed={0.3}
             animateFrom="right"
@@ -993,7 +993,7 @@ export default function Home() {
 
         {/* ==================== MASTERY / CHAPTER 3 ==================== */}
         <div className="relative overflow-hidden" style={{ height: sectionHeight('160vh', '200vh', '250vh') }}>
-          <div className="absolute w-[600px] h-[600px] rounded-full opacity-8"
+          <div className="absolute w-150 h-150 rounded-full opacity-8"
             style={{ top: '10%', left: '10%', background: 'radial-gradient(circle, rgba(196,149,106,0.25), transparent)', filter: 'blur(120px)' }} />
 
           <ScatteredText
@@ -1022,7 +1022,7 @@ export default function Home() {
             alt="Mastery 1"
             width={320}
             height={320}
-            className="w-[140px] md:w-[320px] !top-[55%] !left-[5%] md:!top-[13%] md:!left-[5%]"
+            className="w-35 md:w-80 top-[55%]! left-[5%]! md:top-[13%]! md:left-[5%]!"
             style={{ rotate: '-8deg', zIndex: 4 }}
             parallaxSpeed={0.3}
             animateFrom="left"
@@ -1033,7 +1033,7 @@ export default function Home() {
             alt="Mastery 2"
             width={280}
             height={280}
-            className="w-[120px] md:w-[280px] !top-[60%] !left-[70%] md:!top-[15%] md:!left-[35%]"
+            className="w-30 md:w-70 top-[60%]! left-[70%]! md:top-[15%]! md:left-[35%]!"
             style={{ rotate: '5deg', zIndex: 3 }}
             parallaxSpeed={0.5}
             animateFrom="scale"
@@ -1043,7 +1043,7 @@ export default function Home() {
             alt="Mastery 3"
             width={250}
             height={250}
-            className="w-[100px] md:w-[250px] !top-[25%] !right-[5%] md:!top-[18%] md:!right-[8%]"
+            className="w-25 md:w-62.5 top-[25%]! right-[5%]! md:top-[18%]! md:right-[8%]!"
             style={{ rotate: '-12deg', zIndex: 5 }}
             parallaxSpeed={0.7}
             animateFrom="right"
@@ -1141,7 +1141,7 @@ export default function Home() {
               </div>
               <div data-physics data-mass="0.7" className="absolute" style={{ top: '10%', left: '8%' }}>
                 <Image src="/collage/banana-plant.png" alt="p1" width={130} height={130}
-                  className="pointer-events-none select-none rounded-lg w-[80px] md:w-[130px]" />
+                  className="pointer-events-none select-none rounded-lg w-20 md:w-32.5" />
               </div>
               <div data-physics data-mass="1.0" className="absolute" style={{ top: '20%', left: '50%' }}>
                 <div className="text-5xl md:text-7xl font-bold" style={{
@@ -1252,7 +1252,7 @@ export default function Home() {
         <div className="relative overflow-hidden" style={{ height: sectionHeight('180vh', '230vh', '280vh') }}>
 
           {/* Ambient warm glow */}
-          <div className="absolute w-[800px] h-[800px] rounded-full pointer-events-none"
+          <div className="absolute w-200 h-200 rounded-full pointer-events-none"
             style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', background: 'radial-gradient(circle, rgba(196,149,106,0.07), transparent)', filter: 'blur(120px)' }} />
 
           {/* ── CHAPTER TITLE ── */}
@@ -1473,7 +1473,7 @@ export default function Home() {
             alt="desk camera"
             width={200}
             height={200}
-            className="w-[100px] md:w-[200px]"
+            className="w-25 md:w-50"
             style={{ top: '63%', left: '3%', rotate: '-14deg', zIndex: 4 }}
             parallaxSpeed={0.3}
             animateFrom="left"
@@ -1483,7 +1483,7 @@ export default function Home() {
             alt="desk typewriter"
             width={260}
             height={260}
-            className="w-[130px] md:w-[260px]"
+            className="w-32.5 md:w-65"
             style={{ top: '65%', right: '3%', rotate: '11deg', zIndex: 4 }}
             parallaxSpeed={0.4}
             animateFrom="right"
@@ -1493,7 +1493,7 @@ export default function Home() {
             alt="reference books"
             width={180}
             height={180}
-            className="w-[90px] md:w-[180px]"
+            className="w-22.5 md:w-45"
             style={{ top: '78%', left: '45%', rotate: '-6deg', zIndex: 3 }}
             parallaxSpeed={0.2}
             animateFrom="bottom"
@@ -1517,7 +1517,7 @@ export default function Home() {
         <div className="relative overflow-hidden" style={{ height: '180vh' }}>
 
           {/* Warm ambient light */}
-          <div className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
+          <div className="absolute w-150 h-150 rounded-full pointer-events-none"
             style={{ top: '5%', left: '50%', transform: 'translateX(-50%)', background: 'radial-gradient(circle, rgba(196,149,106,0.06), transparent)', filter: 'blur(100px)' }} />
 
           {/* Section heading */}
@@ -1609,7 +1609,7 @@ export default function Home() {
         <div className="relative overflow-hidden" style={{ height: '200vh' }}>
           {/* --- BACKGROUND LAYER --- */}
           <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
-            <div className="absolute w-[700px] h-[700px] rounded-full opacity-6"
+            <div className="absolute w-175 h-175 rounded-full opacity-6"
               style={{ top: '20%', left: '30%', background: 'radial-gradient(circle, rgba(196,149,106,0.2), transparent)', filter: 'blur(120px)' }} />
 
             <CollageElement
@@ -1625,7 +1625,7 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- MIDGROUND LAYER --- */}
-          <DioramaLayer speed={1} className="z-[5]">
+          <DioramaLayer speed={1} className="z-5">
             <HoverMorphText
               text="WHAT'S NEXT"
               className="reveal-text"
@@ -1683,7 +1683,7 @@ export default function Home() {
           </DioramaLayer>
 
           {/* --- FOREGROUND LAYER --- */}
-          <DioramaLayer speed={1.7} className="z-[10]">
+          <DioramaLayer speed={1.7} className="z-10">
             <CollageElement
               src="/collage/fragments-new.png"
               alt="Vision"
