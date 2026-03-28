@@ -21,6 +21,7 @@ export default async function Image() {
           background: '#1a1409',
         }}
       >
+        {/* Logo URL relies on NEXT_PUBLIC_SITE_URL being set to the production domain at build/runtime */}
         {/* Logo */}
         <img
           src={`${SITE_URL}/logo.png`}
