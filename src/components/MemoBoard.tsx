@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import TapeRoll3D from './TapeRoll3D';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
@@ -294,7 +294,9 @@ function WashiTapeRoll({ onClick }: { onClick: () => void; }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.6, type: 'spring', stiffness: 180, damping: 20 }}
     >
-      <TapeRoll3D />
+      <Suspense fallback={null}>
+        <TapeRoll3D />
+      </Suspense>
     </motion.div>
   );
 }

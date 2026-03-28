@@ -173,11 +173,9 @@ export default function CollageElement({
         alt={alt}
         width={width}
         height={height}
+        sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 22vw"
         className="pointer-events-none select-none"
-        style={{
-          filter: 'saturate(1.2) contrast(1.05)',
-        }}
-        priority // Consider adding priority if LCP element
+        style={{ filter: 'saturate(1.2) contrast(1.05)' }}
       />
     </div>
   );
