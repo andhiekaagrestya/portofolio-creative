@@ -84,10 +84,16 @@ function CursorTrailInner() {
 
 export default function CursorTrail() {
   const prefersReduced = useReducedMotion();
-  const [isTouch, setIsTouch] = useState(false);
+  const [isTouch, setIsTouch] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(pointer: coarse)').matches;
+  });
 
   useEffect(() => {
-    setIsTouch(window.matchMedia('(pointer: coarse)').matches);
+    const mq = window.matchMedia('(pointer: coarse)');
+    const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
   }, []);
 
   if (isTouch || prefersReduced) return null;

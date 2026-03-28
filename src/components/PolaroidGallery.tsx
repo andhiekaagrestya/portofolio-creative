@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import Image from 'next/image';
 import ProjectModal from './ProjectModal';
@@ -215,6 +215,9 @@ function WormholeCard({ project, initialZ, worldZ, onClick }: {
   // Blur: Depth of field simulation
   const blur = useTransform(currentZ, [-2000, 0, 200], [10, 0, 20]);
 
+  // Stable random tilt for tape — computed once per mount
+  const tapeTilt = useMemo(() => Math.random() * 4 - 2, []);
+
   return (
     <motion.div
       className="absolute"
@@ -256,7 +259,7 @@ function WormholeCard({ project, initialZ, worldZ, onClick }: {
               {project.title}
             </h3>
             <p className="text-xs text-[#6e5d50] uppercase tracking-widest mt-1 opacity-60">
-              {project.tags[0]} // {project.tags[1]}
+              {project.tags[0]}{project.tags[1] ? ` // ${project.tags[1]}` : ''}
             </p>
           </div>
 
@@ -264,8 +267,8 @@ function WormholeCard({ project, initialZ, worldZ, onClick }: {
           <motion.div
             className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#ebe1cd] opacity-90 backdrop-blur-sm"
             style={{
-              transformOrigin: 'bottom center', // Peel from the bottom edge
-              rotateZ: Math.random() * 4 - 2 // Keep the initial slight random tilt
+              transformOrigin: 'bottom center',
+              rotateZ: tapeTilt
             }}
             variants={{
               rest: {
@@ -311,7 +314,9 @@ function WormholeParticles({ zPosition }: { zPosition: MotionValue<number>; }) {
   );
 }
 
-function Particle({ data, worldZ }: { data: any, worldZ: MotionValue<number>; }) {
+interface ParticleData { x: number | string; y: number | string; z: number; scale: number; }
+
+function Particle({ data, worldZ }: { data: ParticleData, worldZ: MotionValue<number>; }) {
   const currentZ = useTransform(worldZ, (latest) => data.z + latest);
   const opacity = useTransform(currentZ, [-6000, -1000, 0, 500], [0, 0.4, 0.8, 0]);
 

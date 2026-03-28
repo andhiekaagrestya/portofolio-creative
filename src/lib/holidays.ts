@@ -11,6 +11,7 @@ export function useActiveTheme() {
 
   useEffect(() => {
     // Determine the theme on the client after mount to prevent hydration mismatches
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(detectActiveHoliday());
   }, []);
 

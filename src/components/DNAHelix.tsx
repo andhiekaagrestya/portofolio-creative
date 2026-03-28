@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
-import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useAnimationFrame, useMotionValue, useTransform, MotionValue } from 'framer-motion';
 
 interface DNAHelixProps {
   texts?: string[];
@@ -26,6 +26,7 @@ export default function DNAHelix({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 
@@ -83,7 +84,17 @@ export default function DNAHelix({
   );
 }
 
-function HelixPair({ char1, char2, index, total, time, amplitude, frequency }: any) {
+interface HelixPairProps {
+  char1: string;
+  char2: string;
+  index: number;
+  total: number;
+  time: MotionValue<number>;
+  amplitude: number;
+  frequency: number;
+}
+
+function HelixPair({ char1, char2, index, total, time, amplitude, frequency }: HelixPairProps) {
   const spacing = 30; // px spacing
   const totalWidth = total * spacing;
 

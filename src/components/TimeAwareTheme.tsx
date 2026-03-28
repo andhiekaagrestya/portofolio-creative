@@ -111,6 +111,7 @@ export default function TimeAwareTheme() {
   useEffect(() => {
     const hour = new Date().getHours();
     const currentPhase = getPhase(hour);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPhase(currentPhase);
 
     // Apply CSS variables with transition

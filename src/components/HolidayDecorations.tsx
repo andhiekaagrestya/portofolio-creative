@@ -1,14 +1,34 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function HolidayDecorations({ theme }: { theme: string; }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  const snowflakeData = useMemo(
+    () => Array.from({ length: 30 }, (_, i) => ({
+      delay: i * 0.2,
+      left: `${Math.random() * 100}vw`,
+      size: Math.random() * 25 + 15,
+      duration: 12 + Math.random() * 5,
+    })),
+    []
+  );
+
+  const confettiData = useMemo(
+    () => Array.from({ length: 25 }, (_, i) => ({
+      delay: i * 0.3,
+      left: `${Math.random() * 100}vw`,
+      duration: 4 + Math.random() * 3,
+    })),
+    []
+  );
 
   if (!mounted) return null;
 
@@ -125,8 +145,8 @@ export default function HolidayDecorations({ theme }: { theme: string; }) {
         </motion.div>
 
         {/* Falling Snowflakes - Thicker & More */}
-        {[...Array(30)].map((_, i) => (
-          <Snowflake key={i} delay={i * 0.2} left={`${Math.random() * 100}vw`} size={Math.random() * 25 + 15} />
+        {snowflakeData.map((sf, i) => (
+          <Snowflake key={i} delay={sf.delay} left={sf.left} size={sf.size} duration={sf.duration} />
         ))}
         {/* Heavy Snow Overlay */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay" />
@@ -196,8 +216,8 @@ export default function HolidayDecorations({ theme }: { theme: string; }) {
         <FireworkFlash top="85vh" left="55vw" delay={2.5} color="var(--accent-sepia)" size={220} />
 
         {/* Dense Golden Confetti */}
-        {[...Array(25)].map((_, i) => (
-          <ConfettiLine key={i} delay={i * 0.3} left={`${Math.random() * 100}vw`} />
+        {confettiData.map((cf, i) => (
+          <ConfettiLine key={i} delay={cf.delay} left={cf.left} duration={cf.duration} />
         ))}
       </div>
     );
@@ -256,14 +276,14 @@ function AmbientStar({ top, left, delay }: { top: string; left: string; delay: n
   );
 }
 
-function Snowflake({ left, delay, size }: { left: string; delay: number; size: number; }) {
+function Snowflake({ left, delay, size, duration }: { left: string; delay: number; size: number; duration: number; }) {
   return (
     <motion.div
       className="absolute top-[-5vh] text-[var(--accent-cream)] opacity-60"
       style={{ left, fontSize: size }}
       initial={{ y: '-10vh', rotate: 0 }}
       animate={{ y: '110vh', rotate: 360, x: [0, 30, -30, 0] }}
-      transition={{ repeat: Infinity, duration: 12 + Math.random() * 5, ease: 'linear', delay }}
+      transition={{ repeat: Infinity, duration, ease: 'linear', delay }}
     >
       ❄
     </motion.div>
@@ -315,14 +335,14 @@ function FireworkFlash({ top, left, delay, color, size }: { top: string; left: s
   );
 }
 
-function ConfettiLine({ left, delay }: { left: string; delay: number; }) {
+function ConfettiLine({ left, delay, duration }: { left: string; delay: number; duration: number; }) {
   return (
     <motion.div
       className="absolute top-[-10vh] w-[4px] h-[70px] rounded-full"
       style={{ left, background: 'linear-gradient(to bottom, var(--accent-rust), transparent)', boxShadow: '0 0 10px var(--accent-rust)' }}
       initial={{ y: '-10vh' }}
       animate={{ y: '110vh' }}
-      transition={{ repeat: Infinity, duration: 4 + Math.random() * 3, ease: 'linear', delay }}
+      transition={{ repeat: Infinity, duration, ease: 'linear', delay }}
     />
   );
 }

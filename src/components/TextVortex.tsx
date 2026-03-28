@@ -2,6 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import { motion, useAnimationFrame, useSpring, useMotionValue, useTransform } from 'framer-motion';
+import type { MotionValue } from 'framer-motion';
 
 interface TextVortexProps {
   texts?: string[];
@@ -103,7 +104,17 @@ export default function TextVortex({
   );
 }
 
-function VortexRing({ text, initialZ, color, warpZ, depth, step, radius }: any) {
+interface VortexRingProps {
+  text: string;
+  initialZ: number;
+  color: string;
+  warpZ: MotionValue<number>;
+  depth: number;
+  step: number;
+  radius: number;
+}
+
+function VortexRing({ text, initialZ, color, warpZ, depth, step, radius }: VortexRingProps) {
   // Current Z = (initialZ + warpZ) modulo total depth?
   // We need rings to come from -depth and disappear at +some.
 

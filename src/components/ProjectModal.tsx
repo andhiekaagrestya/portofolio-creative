@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import HandDrawnSVG from './HandDrawnSVG';
 
@@ -27,6 +27,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   // Smooth spring physics for mouse movement
   const mouseX = useSpring(x, { stiffness: 50, damping: 20 });
   const mouseY = useSpring(y, { stiffness: 50, damping: 20 });
+
+  // Stable project number — computed once per modal open
+  const projectNum = useMemo(() => Math.floor(Math.random() * 9) + 1, []);
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!project) return;
@@ -151,7 +154,7 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               <div className="flex items-center gap-4 mb-4">
                 <div className="h-px w-20 bg-[var(--accent-warm)]" />
                 <span className="text-xs font-mono uppercase tracking-[0.3em] text-[var(--accent-warm)]">
-                  Project No. 0{Math.floor(Math.random() * 9) + 1}
+                  Project No. 0{projectNum}
                 </span>
               </div>
               <h2 className="text-6xl md:text-8xl font-black text-white leading-[0.85] mix-blend-difference"
@@ -191,8 +194,8 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                   </span>
                 ) : (
                   <span className="opacity-60 italic">
-                    // Full case study data is currently classified.
-                    <br />// Accessing archival fragments...
+                    {`// Full case study data is currently classified.`}
+                    <br />{`// Accessing archival fragments...`}
                   </span>
                 )}
               </p>
