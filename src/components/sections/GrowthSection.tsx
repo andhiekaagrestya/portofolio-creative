@@ -6,13 +6,17 @@ import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import MousePhysics from '@/components/MousePhysics';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 const DioramaLayer = dynamic(() => import('@/components/DioramaLayer'), { ssr: false });
 
 export default function GrowthSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '140vh' : isTablet ? '180vh' : '220vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '220vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
       {/* --- BACKGROUND LAYER --- */}
       <DioramaLayer speed={0.5} className="z-0" fadeOnScroll>
         <div className="absolute w-125 h-125 rounded-full opacity-8"

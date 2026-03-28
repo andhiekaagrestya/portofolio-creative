@@ -5,11 +5,16 @@ import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 export default function FoundFootageSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '120vh' : isTablet ? '140vh' : '160vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '160vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
 
       {/* VHS scanlines overlay */}
       <div

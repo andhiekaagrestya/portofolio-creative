@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
-import { useRef, ReactNode } from 'react';
+import { useRef, ReactNode, useEffect, useState } from 'react';
 
 interface DioramaLayerProps {
   children: ReactNode;
@@ -20,6 +20,13 @@ export default function DioramaLayer({
   className = '',
   style = {}
 }: DioramaLayerProps) {
+  const [prefersReduced, setPrefersReduced] = useState(false);
+  useEffect(() => {
+    setPrefersReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
+  const effectiveSpeed = prefersReduced ? 0 : speed;
+
   const ref = useRef<HTMLDivElement>(null);
 
   // Track scroll position of this absolute block relative to the viewport
@@ -33,7 +40,7 @@ export default function DioramaLayer({
   // Speed > 1 means it moves MORE than normal scroll (foreground).
   // Speed < 1 means it moves LESS (background).
   // 100vh range is roughly equivalent to passing through the screen.
-  const yShiftRange = (speed - 1) * -100;
+  const yShiftRange = (effectiveSpeed - 1) * -100;
 
   const yParallax = useTransform(
     scrollYProgress,
@@ -53,7 +60,7 @@ export default function DioramaLayer({
       ref={ref}
       className={`absolute inset-0 pointer-events-none ${className}`}
       style={{
-        y: speed === 1 ? 0 : yParallax,
+        y: effectiveSpeed === 1 ? 0 : yParallax,
         opacity: fadeOnScroll ? opacity : 1,
         ...style
       }}

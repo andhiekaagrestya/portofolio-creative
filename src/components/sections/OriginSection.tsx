@@ -4,13 +4,17 @@ import dynamic from 'next/dynamic';
 import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 const DioramaLayer = dynamic(() => import('@/components/DioramaLayer'), { ssr: false });
 
 export default function OriginSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '130vh' : isTablet ? '160vh' : '200vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '200vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
       {/* --- BACKGROUND LAYER (Deep, Slow) --- */}
       <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
         {/* Warm projector glow */}

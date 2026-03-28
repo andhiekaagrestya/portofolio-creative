@@ -52,6 +52,7 @@ export default function CollageElement({
     if (!elementRef.current) return;
 
     const el = elementRef.current;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Entry animation
     const fromVars: Record<string, number | string> = { opacity: 0 };
@@ -59,32 +60,27 @@ export default function CollageElement({
 
     switch (animateFrom) {
       case 'left':
-        fromVars.x = -200;
-        fromVars.rotation = -15;
+        if (!prefersReduced) { fromVars.x = -200; fromVars.rotation = -15; }
         toVars.x = 0;
         toVars.rotation = parseFloat(style.rotate || '0');
         break;
       case 'right':
-        fromVars.x = 200;
-        fromVars.rotation = 15;
+        if (!prefersReduced) { fromVars.x = 200; fromVars.rotation = 15; }
         toVars.x = 0;
         toVars.rotation = parseFloat(style.rotate || '0');
         break;
       case 'top':
-        fromVars.y = -200;
-        fromVars.rotation = -10;
+        if (!prefersReduced) { fromVars.y = -200; fromVars.rotation = -10; }
         toVars.y = 0;
         toVars.rotation = parseFloat(style.rotate || '0');
         break;
       case 'bottom':
-        fromVars.y = 200;
-        fromVars.rotation = 10;
+        if (!prefersReduced) { fromVars.y = 200; fromVars.rotation = 10; }
         toVars.y = 0;
         toVars.rotation = parseFloat(style.rotate || '0');
         break;
       case 'scale':
-        fromVars.scale = 0;
-        fromVars.rotation = Math.random() * 30 - 15;
+        if (!prefersReduced) { fromVars.scale = 0; fromVars.rotation = Math.random() * 30 - 15; }
         toVars.scale = 1;
         toVars.rotation = parseFloat(style.rotate || '0');
         break;
@@ -103,19 +99,21 @@ export default function CollageElement({
     }
 
     // Parallax
-    gsap.to(el, {
-      yPercent: -100 * parallaxSpeed,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-      },
-    });
+    if (!prefersReduced) {
+      gsap.to(el, {
+        yPercent: -100 * parallaxSpeed,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+    }
 
     // Magnetic effect
-    if (magnetic) {
+    if (magnetic && !prefersReduced) {
       const handleMouse = (e: MouseEvent) => {
         const rect = el.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;

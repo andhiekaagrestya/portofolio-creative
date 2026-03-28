@@ -6,12 +6,16 @@ import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import WashiTape from '@/components/WashiTape';
 import StickyNote from '@/components/StickyNote';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 export default function ProcessSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '200vh' : isTablet ? '240vh' : '280vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '280vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
 
       {/* Ambient warm glow */}
       <div className="absolute w-200 h-200 rounded-full pointer-events-none"

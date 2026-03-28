@@ -5,12 +5,16 @@ import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import WashiTape from '@/components/WashiTape';
 import MemoBoard from '@/components/MemoBoard';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 export default function TestimonialsSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '140vh' : isTablet ? '160vh' : '180vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '180vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
 
       {/* Warm ambient light */}
       <div className="absolute w-150 h-150 rounded-full pointer-events-none"

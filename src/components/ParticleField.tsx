@@ -11,6 +11,9 @@ export default function ParticleField() {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const particleCount = prefersReduced ? 500 : 1500;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
@@ -25,7 +28,6 @@ export default function ParticleField() {
     containerRef.current.appendChild(renderer.domElement);
 
     // Create particles
-    const particleCount = 1500;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -53,9 +55,9 @@ export default function ParticleField() {
 
       sizes[i] = Math.random() * 3 + 0.5;
 
-      velocities[i3] = (Math.random() - 0.5) * 0.002;
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.002;
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.001;
+      velocities[i3] = prefersReduced ? 0 : (Math.random() - 0.5) * 0.002;
+      velocities[i3 + 1] = prefersReduced ? 0 : (Math.random() - 0.5) * 0.002;
+      velocities[i3 + 2] = prefersReduced ? 0 : (Math.random() - 0.5) * 0.001;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));

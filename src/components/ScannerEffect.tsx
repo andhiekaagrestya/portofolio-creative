@@ -151,7 +151,7 @@ function playScanSound(ctx: AudioContext) {
   clunkSrc.start(t + 2.2);
 }
 
-export default function ScannerEffect() {
+function ScannerEffectInner() {
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
 
@@ -272,4 +272,13 @@ export default function ScannerEffect() {
       />
     </motion.div>
   );
+}
+
+export default function ScannerEffect() {
+  const [isReduced, setIsReduced] = useState(false);
+  useEffect(() => {
+    setIsReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+  if (isReduced) return null;
+  return <ScannerEffectInner />;
 }

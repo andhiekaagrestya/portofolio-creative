@@ -6,12 +6,16 @@ import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import MousePhysics from '@/components/MousePhysics';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 export default function MasterySection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '180vh' : isTablet ? '220vh' : '250vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '250vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
       <div className="absolute w-150 h-150 rounded-full opacity-8"
         style={{ top: '10%', left: '10%', background: 'radial-gradient(circle, rgba(196,149,106,0.25), transparent)', filter: 'blur(120px)' }} />
 

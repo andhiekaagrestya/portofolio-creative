@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode, useState } from 'react';
 
 interface PhysicsElement {
   el: HTMLElement;
@@ -32,6 +32,11 @@ export default function MousePhysics({
   springStiffness = 0.03,
   damping = 0.85,
 }: MousePhysicsProps) {
+  const [isReduced, setIsReduced] = useState(false);
+  useEffect(() => {
+    setIsReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const elementsRef = useRef<PhysicsElement[]>([]);
@@ -116,16 +121,40 @@ export default function MousePhysics({
       animFrameRef.current = requestAnimationFrame(animate);
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      mouseRef.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const touch = e.changedTouches[0];
+      mouseRef.current = { x: touch.clientX, y: touch.clientY };
+      handleClick();
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('click', handleClick);
+    containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
+    containerRef.current.addEventListener('touchend', handleTouchEnd);
     animFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('click', handleClick);
+      containerRef.current?.removeEventListener('touchmove', handleTouchMove);
+      containerRef.current?.removeEventListener('touchend', handleTouchEnd);
       cancelAnimationFrame(animFrameRef.current);
     };
   }, [radius, strength, springStiffness, damping]);
+
+  if (isReduced) {
+    return (
+      <div className={className} style={style}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className={className} style={style}>

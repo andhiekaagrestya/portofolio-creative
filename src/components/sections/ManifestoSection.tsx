@@ -4,12 +4,16 @@ import dynamic from 'next/dynamic';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import WashiTape from '@/components/WashiTape';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
 export default function ManifestoSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '120vh' : isTablet ? '150vh' : '180vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '180vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
 
       {/* Heavy paper texture background */}
       <div className="absolute inset-0 pointer-events-none"

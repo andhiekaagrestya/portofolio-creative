@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SmoothScroll from '@/components/SmoothScroll';
 import GrainOverlay from '@/components/GrainOverlay';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import LoadingScreen from '@/components/LoadingScreen';
 import IntroSection from '@/components/sections/IntroSection';
 import OriginSection from '@/components/sections/OriginSection';
@@ -29,6 +30,11 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const mainRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useMediaQuery();
+
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [isMobile]);
 
   useEffect(() => {
     if (!mainRef.current) return;

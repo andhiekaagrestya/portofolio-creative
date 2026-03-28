@@ -4,12 +4,17 @@ import dynamic from 'next/dynamic';
 import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 const DioramaLayer = dynamic(() => import('@/components/DioramaLayer'), { ssr: false });
 
 export default function VisionSection() {
+  const { isMobile, isTablet } = useMediaQuery();
+  const height = isMobile ? '160vh' : isTablet ? '180vh' : '200vh';
+
   return (
-    <div className="relative overflow-hidden" style={{ height: '200vh' }}>
+    <div className="relative overflow-hidden" style={{ height }}>
       {/* --- BACKGROUND LAYER --- */}
       <DioramaLayer speed={0.4} className="z-0" fadeOnScroll>
         <div className="absolute w-175 h-175 rounded-full opacity-6"

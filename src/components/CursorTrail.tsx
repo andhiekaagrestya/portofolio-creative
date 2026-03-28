@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export default function CursorTrail() {
+function CursorTrailInner() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const trailsRef = useRef<HTMLDivElement[]>([]);
   const mousePos = useRef({ x: -100, y: -100 });
@@ -79,4 +79,17 @@ export default function CursorTrail() {
       </div>
     </>
   );
+}
+
+export default function CursorTrail() {
+  const [shouldHide, setShouldHide] = useState(false);
+
+  useEffect(() => {
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setShouldHide(isTouch || isReduced);
+  }, []);
+
+  if (shouldHide) return null;
+  return <CursorTrailInner />;
 }
