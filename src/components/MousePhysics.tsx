@@ -41,7 +41,7 @@ export default function MousePhysics({
   const animFrameRef = useRef<number>(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isReduced) return;
 
     // Find all physics-enabled children
     const physicsEls = containerRef.current.querySelectorAll('[data-physics]');

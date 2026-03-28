@@ -56,7 +56,11 @@ export default function CollageElement({
     const ctx = gsap.context(() => {
       // Entry animation
       const fromVars: Record<string, number | string> = { opacity: 0 };
-      const toVars: Record<string, number | string> = { opacity: 1, duration: 1.5, ease: 'power2.out' };
+      const toVars: Record<string, number | string> = {
+        opacity: 1,
+        duration: prefersReduced ? 0.3 : 1.5,
+        ease: 'power2.out',
+      };
 
       switch (animateFrom) {
         case 'left':
