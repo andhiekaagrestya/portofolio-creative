@@ -10,7 +10,7 @@ const PolaroidGallery = dynamic(() => import('@/components/PolaroidGallery'), { 
 
 export default function SelectedWorksSection() {
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full">
       <HoverMorphText
         text="SELECTED WORKS"
         className="reveal-text"

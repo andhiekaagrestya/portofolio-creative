@@ -146,7 +146,7 @@ export default function CollageElement({
         };
 
         window.addEventListener('mousemove', handleMouse);
-        ctx.add(() => () => window.removeEventListener('mousemove', handleMouse));
+        return () => window.removeEventListener('mousemove', handleMouse);
       }
     }, elementRef);
     return () => ctx.revert();
