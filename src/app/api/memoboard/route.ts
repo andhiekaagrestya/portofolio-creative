@@ -20,13 +20,20 @@ function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+const HASH_SALT = process.env.MEMOBOARD_HASH_SALT ?? 'memoboard-salt';
+
 function hashIp(ip: string): string {
-  return createHash('sha256').update(ip + 'memoboard-salt').digest('hex').slice(0, 32);
+  return createHash('sha256').update(ip + HASH_SALT).digest('hex').slice(0, 32);
 }
 
-// Basic input sanitization to strip out < and > to prevent stored XSS or injection
+// Sanitize user input — & must come first to avoid double-encoding
 function sanitize(str: string): string {
-  return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 // ── GET — fetch all notes ──────────────────────────────────────────

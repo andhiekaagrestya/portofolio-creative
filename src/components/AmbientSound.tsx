@@ -219,22 +219,33 @@ export default function AmbientSound() {
   const startAudio = useCallback(() => {
     if (audioCtxRef.current) return; // Already running
 
-    const ctx = new AudioContext();
+    let ctx: AudioContext;
+    try {
+      ctx = new AudioContext();
+    } catch {
+      // AudioContext not supported (e.g. some iOS/Safari restrictions)
+      return;
+    }
     audioCtxRef.current = ctx;
 
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    master.connect(ctx.destination);
-    masterGainRef.current = master;
+    try {
+      const master = ctx.createGain();
+      master.gain.value = 0;
+      master.connect(ctx.destination);
+      masterGainRef.current = master;
 
-    const nodes = createAmbientLayers(ctx, master);
-    nodesRef.current = nodes;
+      const nodes = createAmbientLayers(ctx, master);
+      nodesRef.current = nodes;
 
-    const now = ctx.currentTime;
-    master.gain.setValueAtTime(0, now);
-    master.gain.linearRampToValueAtTime(0.8, now + 3);
+      const now = ctx.currentTime;
+      master.gain.setValueAtTime(0, now);
+      master.gain.linearRampToValueAtTime(0.8, now + 3);
 
-    setIsPlaying(true);
+      setIsPlaying(true);
+    } catch {
+      ctx.close();
+      audioCtxRef.current = null;
+    }
   }, [createAmbientLayers]);
 
   // ── Stop audio engine ──
