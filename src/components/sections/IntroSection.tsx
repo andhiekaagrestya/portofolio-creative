@@ -3,11 +3,9 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import dynamic from 'next/dynamic';
 import CollageElement from '@/components/CollageElement';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
-
-const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,67 +16,70 @@ export default function IntroSection() {
   const nameRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (nameRef.current) {
-      const letters = nameRef.current.querySelectorAll('.letter');
-      gsap.fromTo(
-        letters,
-        {
-          opacity: 0,
-          ...(prefersReduced ? {} : { y: 100, rotateX: -90 }),
-        },
-        {
-          opacity: 1,
-          ...(prefersReduced ? {} : { y: 0, rotateX: 0 }),
-          duration: prefersReduced ? 0.3 : 1.2,
-          stagger: prefersReduced ? 0 : 0.05,
-          ease: 'back.out(1.7)',
-          delay: 0.5,
-        }
-      );
-    }
-
-    if (subtitleRef.current) {
-      gsap.fromTo(
-        subtitleRef.current,
-        { opacity: 0, ...(prefersReduced ? {} : { y: 20 }) },
-        {
-          opacity: 0.6,
-          ...(prefersReduced ? {} : { y: 0 }),
-          duration: prefersReduced ? 0.3 : 1.5,
-          delay: prefersReduced ? 0.3 : 1.5,
-          ease: 'power2.out',
-        }
-      );
-    }
-
-    if (scrollIndicatorRef.current) {
-      gsap.fromTo(scrollIndicatorRef.current, { opacity: 0 }, { opacity: 1, duration: 1, delay: 2.5 });
-
-      if (!prefersReduced) {
-        gsap.to(scrollIndicatorRef.current, {
-          y: 10,
-          duration: 1.2,
-          yoyo: true,
-          repeat: -1,
-          ease: 'sine.inOut',
-        });
+    const ctx = gsap.context(() => {
+      if (nameRef.current) {
+        const letters = nameRef.current.querySelectorAll('.letter');
+        gsap.fromTo(
+          letters,
+          {
+            opacity: 0,
+            ...(prefersReduced ? {} : { y: 100, rotateX: -90 }),
+          },
+          {
+            opacity: 1,
+            ...(prefersReduced ? {} : { y: 0, rotateX: 0 }),
+            duration: prefersReduced ? 0.3 : 1.2,
+            stagger: prefersReduced ? 0 : 0.05,
+            ease: 'back.out(1.7)',
+            delay: 0.5,
+          }
+        );
       }
 
-      gsap.to(scrollIndicatorRef.current, {
-        opacity: 0,
-        scrollTrigger: {
-          trigger: scrollIndicatorRef.current,
-          start: '100px top',
-          end: '200px top',
-          scrub: true,
-        },
-      });
-    }
-  }, []);
+      if (subtitleRef.current) {
+        gsap.fromTo(
+          subtitleRef.current,
+          { opacity: 0, ...(prefersReduced ? {} : { y: 20 }) },
+          {
+            opacity: 0.6,
+            ...(prefersReduced ? {} : { y: 0 }),
+            duration: prefersReduced ? 0.3 : 1.5,
+            delay: prefersReduced ? 0.3 : 1.5,
+            ease: 'power2.out',
+          }
+        );
+      }
+
+      if (scrollIndicatorRef.current) {
+        gsap.fromTo(scrollIndicatorRef.current, { opacity: 0 }, { opacity: 1, duration: 1, delay: 2.5 });
+
+        if (!prefersReduced) {
+          gsap.to(scrollIndicatorRef.current, {
+            y: 10,
+            duration: 1.2,
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inOut',
+          });
+        }
+
+        gsap.to(scrollIndicatorRef.current, {
+          opacity: 0,
+          scrollTrigger: {
+            trigger: scrollIndicatorRef.current,
+            start: '100px top',
+            end: '200px top',
+            scrub: true,
+          },
+        });
+      }
+    });
+
+    return () => ctx.revert();
+  }, [prefersReduced]);
 
   return (
     <div className="relative overflow-hidden" style={{ height: '120vh' }}>
