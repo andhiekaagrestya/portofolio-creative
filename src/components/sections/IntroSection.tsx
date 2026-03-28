@@ -76,7 +76,7 @@ export default function IntroSection() {
           },
         });
       }
-    });
+    }, nameRef);
 
     return () => ctx.revert();
   }, [prefersReduced]);
