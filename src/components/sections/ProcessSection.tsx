@@ -1,0 +1,278 @@
+'use client';
+
+import dynamic from 'next/dynamic';
+import CollageElement from '@/components/CollageElement';
+import ScatteredText from '@/components/ScatteredText';
+import HandDrawnSVG from '@/components/HandDrawnSVG';
+import WashiTape from '@/components/WashiTape';
+import StickyNote from '@/components/StickyNote';
+
+const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
+
+export default function ProcessSection() {
+  return (
+    <div className="relative overflow-hidden" style={{ height: '280vh' }}>
+
+      {/* Ambient warm glow */}
+      <div className="absolute w-200 h-200 rounded-full pointer-events-none"
+        style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', background: 'radial-gradient(circle, rgba(196,149,106,0.07), transparent)', filter: 'blur(120px)' }} />
+
+      {/* ── CHAPTER TITLE ── */}
+      <HoverMorphText
+        text="THE PROCESS"
+        className="reveal-text"
+        font="serif"
+        weight={900}
+        color="var(--accent-cream)"
+        italicHover
+        style={{
+          position: 'absolute',
+          top: '3%',
+          left: '8%',
+          rotate: '-3deg',
+          fontSize: 'clamp(3rem, 10vw, 8rem)',
+          zIndex: 5,
+        }}
+      />
+      <ScatteredText
+        text="// how the sausage gets made"
+        style={{ top: '9%', left: '10%', rotate: '1deg', fontSize: 'clamp(0.7rem, 1.1vw, 0.9rem)' }}
+        font="mono"
+        color="var(--accent-sage)"
+        animationType="typewriter"
+        zIndex={4}
+      />
+
+      {/* Hand-drawn underline on title */}
+      <HandDrawnSVG
+        preset="underline"
+        width={180}
+        height={22}
+        style={{ top: '5%', left: '8%', rotate: '-2deg' }}
+        color="var(--accent-rust)"
+        strokeWidth={2}
+        duration={1.5}
+        delay={0.2}
+        opacity={0.4}
+        zIndex={6}
+      />
+
+      {/* ── WASHI TAPE ACCENTS ── */}
+      <WashiTape
+        color="#ffb3c6"
+        pattern="stripes"
+        width={200}
+        height={26}
+        rotate={-35}
+        opacity={0.45}
+        style={{ top: '5%', right: '3%', zIndex: 6 }}
+      />
+      <WashiTape
+        color="var(--accent-sage)"
+        pattern="dots"
+        width={160}
+        height={24}
+        rotate={15}
+        opacity={0.4}
+        style={{ top: '18%', left: '-2%', zIndex: 6 }}
+      />
+      <WashiTape
+        color="#ffcc99"
+        pattern="zigzag"
+        width={220}
+        height={28}
+        rotate={-10}
+        opacity={0.5}
+        style={{ top: '55%', right: '5%', zIndex: 6 }}
+      />
+      <WashiTape
+        color="var(--accent-warm)"
+        pattern="stripes"
+        width={140}
+        height={22}
+        rotate={42}
+        opacity={0.35}
+        style={{ top: '80%', left: '10%', zIndex: 6 }}
+      />
+
+      {/* ── STICKY NOTES CLUSTER ── */}
+      <StickyNote
+        color="yellow"
+        rotate={-6}
+        style={{ top: '14%', left: '12%', zIndex: 10 }}
+      >
+        <p className="font-bold text-sm mb-1">fix later™</p>
+        <p className="text-xs opacity-70">- refactor auth flow<br />- add tests (lol)<br />- cleanup console.log</p>
+      </StickyNote>
+
+      <StickyNote
+        color="pink"
+        rotate={5}
+        style={{ top: '12%', left: '38%', zIndex: 11 }}
+        pinColor="#8e44ad"
+      >
+        <p className="font-bold text-sm mb-1">idea 💡</p>
+        <p className="text-xs opacity-80">websocket + canvas<br />realtime collab tool?<br />→ explore this!!</p>
+      </StickyNote>
+
+      <StickyNote
+        color="blue"
+        rotate={-8}
+        style={{ top: '11%', right: '8%', zIndex: 10 }}
+        pinColor="#2471a3"
+      >
+        <p className="font-bold text-sm mb-2">stack check ✓</p>
+        <p className="text-xs leading-relaxed">Next.js ✓<br />Go ✓<br />PostgreSQL ✓<br />Docker ✓</p>
+      </StickyNote>
+
+      <StickyNote
+        color="green"
+        rotate={4}
+        style={{ top: '34%', left: '5%', zIndex: 9 }}
+        pinColor="#1a7a4a"
+      >
+        <p className="font-bold text-sm mb-1">deployed! 🚀</p>
+        <p className="text-xs opacity-70">prod at 2:37am<br />zero downtime<br />fingers crossed 🤞</p>
+      </StickyNote>
+
+      <StickyNote
+        color="orange"
+        rotate={-4}
+        style={{ top: '36%', left: '48%', zIndex: 12 }}
+        pinColor="#cc5500"
+      >
+        <p className="font-bold text-sm mb-1">deadline: NOW</p>
+        <p className="text-xs opacity-80">client wants it<br />yesterday<br />we ship today</p>
+      </StickyNote>
+
+      <StickyNote
+        color="yellow"
+        rotate={9}
+        style={{ top: '35%', right: '5%', zIndex: 10 }}
+      >
+        <p className="font-bold text-sm mb-1">bugs = features</p>
+        <p className="text-xs opacity-70">&quot;it&apos;s not a bug,<br />it&apos;s undocumented<br />behavior&quot; — me</p>
+      </StickyNote>
+
+      <StickyNote
+        color="pink"
+        rotate={-7}
+        style={{ top: '57%', left: '22%', zIndex: 11 }}
+        pinColor="#c0392b"
+      >
+        <p className="font-bold text-sm mb-1">reminder 📌</p>
+        <p className="text-xs opacity-80">sleep is important<br />...but so is this<br />commit.</p>
+      </StickyNote>
+
+      <StickyNote
+        color="blue"
+        rotate={6}
+        style={{ top: '58%', right: '12%', zIndex: 10 }}
+        pinColor="#1a5276"
+      >
+        <p className="font-bold text-sm mb-1">learned today</p>
+        <p className="text-xs opacity-70">GSAP ScrollTrigger<br />pin + scrub combo<br />→ mind blown 🤯</p>
+      </StickyNote>
+
+      {/* ── TIMESTAMP LOG TRAIL ── */}
+      <ScatteredText
+        text="[02:47am] fixed the hydration bug"
+        style={{ top: '22%', left: '28%', rotate: '-1deg', fontSize: 'clamp(0.65rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-sage)"
+        animationType="typewriter"
+        zIndex={7}
+      />
+      <ScatteredText
+        text="[11:13pm] pushed to main. yolo."
+        style={{ top: '27%', left: '55%', rotate: '2deg', fontSize: 'clamp(0.65rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-warm)"
+        animationType="typewriter"
+        zIndex={7}
+      />
+      <ScatteredText
+        text="[05:01am] coffee #4. still going."
+        style={{ top: '48%', left: '10%', rotate: '-2deg', fontSize: 'clamp(0.65rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-rust)"
+        animationType="typewriter"
+        zIndex={7}
+      />
+      <ScatteredText
+        text="[12:00pm] it works. no idea why."
+        style={{ top: '53%', right: '8%', rotate: '3deg', fontSize: 'clamp(0.65rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-cream)"
+        animationType="typewriter"
+        zIndex={7}
+      />
+      <ScatteredText
+        text="[09:22am] shipped. slept. repeat."
+        style={{ top: '70%', left: '35%', rotate: '-1deg', fontSize: 'clamp(0.65rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-sage)"
+        animationType="typewriter"
+        zIndex={7}
+      />
+
+      {/* ── HAND-DRAWN SQUIGGLE between notes ── */}
+      <HandDrawnSVG
+        preset="squiggle"
+        width={120}
+        height={30}
+        style={{ top: '30%', left: '30%', rotate: '8deg' }}
+        color="var(--accent-sepia)"
+        strokeWidth={1.5}
+        duration={1.8}
+        opacity={0.25}
+        zIndex={6}
+      />
+
+      {/* ── COLLAGE ITEMS — desk objects ── */}
+      <CollageElement
+        src="/collage/camera.png"
+        alt="desk camera"
+        width={200}
+        height={200}
+        className="w-25 md:w-50"
+        style={{ top: '63%', left: '3%', rotate: '-14deg', zIndex: 4 }}
+        parallaxSpeed={0.3}
+        animateFrom="left"
+      />
+      <CollageElement
+        src="/collage/typewriter.png"
+        alt="desk typewriter"
+        width={260}
+        height={260}
+        className="w-32.5 md:w-65"
+        style={{ top: '65%', right: '3%', rotate: '11deg', zIndex: 4 }}
+        parallaxSpeed={0.4}
+        animateFrom="right"
+      />
+      <CollageElement
+        src="/collage/books.png"
+        alt="reference books"
+        width={180}
+        height={180}
+        className="w-22.5 md:w-45"
+        style={{ top: '78%', left: '45%', rotate: '-6deg', zIndex: 3 }}
+        parallaxSpeed={0.2}
+        animateFrom="bottom"
+      />
+
+      {/* connector to Vision */}
+      <HandDrawnSVG
+        preset="arrowDown"
+        width={50}
+        height={120}
+        style={{ top: '93%', left: '50%', rotate: '5deg' }}
+        color="var(--accent-warm)"
+        strokeWidth={2}
+        duration={1.5}
+        opacity={0.4}
+        zIndex={3}
+      />
+    </div>
+  );
+}
