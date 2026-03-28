@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, ReactNode, useState } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface PhysicsElement {
   el: HTMLElement;
@@ -32,10 +33,7 @@ export default function MousePhysics({
   springStiffness = 0.03,
   damping = 0.85,
 }: MousePhysicsProps) {
-  const [isReduced, setIsReduced] = useState(false);
-  useEffect(() => {
-    setIsReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }, []);
+  const isReduced = useReducedMotion();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -146,7 +144,7 @@ export default function MousePhysics({
       containerRef.current?.removeEventListener('touchend', handleTouchEnd);
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [radius, strength, springStiffness, damping]);
+  }, [radius, strength, springStiffness, damping, isReduced]);
 
   if (isReduced) {
     return (

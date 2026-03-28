@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,104 +48,105 @@ export default function CollageElement({
 }: CollageElementProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const magneticPos = useRef({ x: 0, y: 0 });
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
     if (!elementRef.current) return;
-
     const el = elementRef.current;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = gsap.context(() => {
+      // Entry animation
+      const fromVars: Record<string, number | string> = { opacity: 0 };
+      const toVars: Record<string, number | string> = { opacity: 1, duration: 1.5, ease: 'power2.out' };
 
-    // Entry animation
-    const fromVars: Record<string, number | string> = { opacity: 0 };
-    const toVars: Record<string, number | string> = { opacity: 1, duration: 1.5, ease: 'power2.out' };
+      switch (animateFrom) {
+        case 'left':
+          if (!prefersReduced) { fromVars.x = -200; fromVars.rotation = -15; }
+          toVars.x = 0;
+          toVars.rotation = parseFloat(style.rotate || '0');
+          break;
+        case 'right':
+          if (!prefersReduced) { fromVars.x = 200; fromVars.rotation = 15; }
+          toVars.x = 0;
+          toVars.rotation = parseFloat(style.rotate || '0');
+          break;
+        case 'top':
+          if (!prefersReduced) { fromVars.y = -200; fromVars.rotation = -10; }
+          toVars.y = 0;
+          toVars.rotation = parseFloat(style.rotate || '0');
+          break;
+        case 'bottom':
+          if (!prefersReduced) { fromVars.y = 200; fromVars.rotation = 10; }
+          toVars.y = 0;
+          toVars.rotation = parseFloat(style.rotate || '0');
+          break;
+        case 'scale':
+          if (!prefersReduced) { fromVars.scale = 0; fromVars.rotation = Math.random() * 30 - 15; }
+          toVars.scale = 1;
+          toVars.rotation = parseFloat(style.rotate || '0');
+          break;
+      }
 
-    switch (animateFrom) {
-      case 'left':
-        if (!prefersReduced) { fromVars.x = -200; fromVars.rotation = -15; }
-        toVars.x = 0;
-        toVars.rotation = parseFloat(style.rotate || '0');
-        break;
-      case 'right':
-        if (!prefersReduced) { fromVars.x = 200; fromVars.rotation = 15; }
-        toVars.x = 0;
-        toVars.rotation = parseFloat(style.rotate || '0');
-        break;
-      case 'top':
-        if (!prefersReduced) { fromVars.y = -200; fromVars.rotation = -10; }
-        toVars.y = 0;
-        toVars.rotation = parseFloat(style.rotate || '0');
-        break;
-      case 'bottom':
-        if (!prefersReduced) { fromVars.y = 200; fromVars.rotation = 10; }
-        toVars.y = 0;
-        toVars.rotation = parseFloat(style.rotate || '0');
-        break;
-      case 'scale':
-        if (!prefersReduced) { fromVars.scale = 0; fromVars.rotation = Math.random() * 30 - 15; }
-        toVars.scale = 1;
-        toVars.rotation = parseFloat(style.rotate || '0');
-        break;
-    }
-
-    if (animateFrom !== 'static') {
-      gsap.fromTo(el, fromVars, {
-        ...toVars,
-        scrollTrigger: {
-          trigger: el,
-          start: scrollStart,
-          end: scrollEnd,
-          toggleActions: 'play none none reverse',
-        },
-      });
-    }
-
-    // Parallax
-    if (!prefersReduced) {
-      gsap.to(el, {
-        yPercent: -100 * parallaxSpeed,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-    }
-
-    // Magnetic effect
-    if (magnetic && !prefersReduced) {
-      const handleMouse = (e: MouseEvent) => {
-        const rect = el.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const distX = e.clientX - centerX;
-        const distY = e.clientY - centerY;
-        const dist = Math.sqrt(distX * distX + distY * distY);
-        const radius = 300;
-
-        if (dist < radius) {
-          const force = (1 - dist / radius) * 30;
-          magneticPos.current = {
-            x: (distX / dist) * force,
-            y: (distY / dist) * force,
-          };
-        } else {
-          magneticPos.current = { x: 0, y: 0 };
-        }
-
-        gsap.to(el, {
-          x: magneticPos.current.x,
-          y: magneticPos.current.y,
-          duration: 0.6,
-          ease: 'power2.out',
+      if (animateFrom !== 'static') {
+        gsap.fromTo(el, fromVars, {
+          ...toVars,
+          scrollTrigger: {
+            trigger: el,
+            start: scrollStart,
+            end: scrollEnd,
+            toggleActions: 'play none none reverse',
+          },
         });
-      };
+      }
 
-      window.addEventListener('mousemove', handleMouse);
-      return () => window.removeEventListener('mousemove', handleMouse);
-    }
-  }, [animateFrom, magnetic, parallaxSpeed, scrollEnd, scrollStart, style.rotate]);
+      // Parallax
+      if (!prefersReduced) {
+        gsap.to(el, {
+          yPercent: -100 * parallaxSpeed,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+      }
+
+      // Magnetic effect
+      if (magnetic && !prefersReduced) {
+        const handleMouse = (e: MouseEvent) => {
+          const rect = el.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const distX = e.clientX - centerX;
+          const distY = e.clientY - centerY;
+          const dist = Math.sqrt(distX * distX + distY * distY);
+          const radius = 300;
+
+          if (dist < radius) {
+            const force = (1 - dist / radius) * 30;
+            magneticPos.current = {
+              x: (distX / dist) * force,
+              y: (distY / dist) * force,
+            };
+          } else {
+            magneticPos.current = { x: 0, y: 0 };
+          }
+
+          gsap.to(el, {
+            x: magneticPos.current.x,
+            y: magneticPos.current.y,
+            duration: 0.6,
+            ease: 'power2.out',
+          });
+        };
+
+        window.addEventListener('mousemove', handleMouse);
+        ctx.add(() => () => window.removeEventListener('mousemove', handleMouse));
+      }
+    }, elementRef);
+    return () => ctx.revert();
+  }, [animateFrom, magnetic, parallaxSpeed, scrollEnd, scrollStart, style.rotate, prefersReduced]);
 
   return (
     <div

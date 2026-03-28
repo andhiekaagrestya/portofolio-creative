@@ -150,8 +150,10 @@ export default function ParticleField() {
       material.uniforms.uScroll.value = scrollRef.current;
 
       // Slow rotation
-      particles.rotation.y += 0.0002;
-      particles.rotation.x += 0.0001;
+      if (!prefersReduced) {
+        particles.rotation.y += 0.0002;
+        particles.rotation.x += 0.0001;
+      }
 
       renderer.render(scene, camera);
     };

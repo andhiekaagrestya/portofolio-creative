@@ -1,7 +1,8 @@
 'use client';
 
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
-import { useRef, ReactNode, useEffect, useState } from 'react';
+import { useRef, ReactNode } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface DioramaLayerProps {
   children: ReactNode;
@@ -20,11 +21,7 @@ export default function DioramaLayer({
   className = '',
   style = {}
 }: DioramaLayerProps) {
-  const [prefersReduced, setPrefersReduced] = useState(false);
-  useEffect(() => {
-    setPrefersReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }, []);
-
+  const prefersReduced = useReducedMotion();
   const effectiveSpeed = prefersReduced ? 0 : speed;
 
   const ref = useRef<HTMLDivElement>(null);

@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import CollageElement from '@/components/CollageElement';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +18,8 @@ export default function IntroSection() {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+  const { isMobile, isTablet } = useMediaQuery();
+  const sectionHeight = isMobile ? '80vh' : isTablet ? '100vh' : '120vh';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -82,7 +85,7 @@ export default function IntroSection() {
   }, [prefersReduced]);
 
   return (
-    <div className="relative overflow-hidden" style={{ height: '120vh' }}>
+    <div className="relative overflow-hidden" style={{ height: sectionHeight }}>
       {/* Warm ambient light - like projector glow */}
       <div className="absolute w-150 h-150 rounded-full opacity-10"
         style={{ top: '20%', left: '20%', background: 'radial-gradient(circle, rgba(196,149,106,0.4), transparent)', filter: 'blur(80px)' }} />

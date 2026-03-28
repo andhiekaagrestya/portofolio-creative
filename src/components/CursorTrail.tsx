@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 function CursorTrailInner() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -82,14 +83,13 @@ function CursorTrailInner() {
 }
 
 export default function CursorTrail() {
-  const [shouldHide, setShouldHide] = useState(false);
+  const prefersReduced = useReducedMotion();
+  const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
-    const isTouch = window.matchMedia('(pointer: coarse)').matches;
-    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setShouldHide(isTouch || isReduced);
+    setIsTouch(window.matchMedia('(pointer: coarse)').matches);
   }, []);
 
-  if (shouldHide) return null;
+  if (isTouch || prefersReduced) return null;
   return <CursorTrailInner />;
 }

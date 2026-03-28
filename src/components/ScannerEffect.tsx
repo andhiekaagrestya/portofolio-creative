@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useVelocity, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // ── Realistic scanner sound — mechanical click + motor hum + scan head whir + confirm beep ──
 function playScanSound(ctx: AudioContext) {
@@ -275,10 +276,7 @@ function ScannerEffectInner() {
 }
 
 export default function ScannerEffect() {
-  const [isReduced, setIsReduced] = useState(false);
-  useEffect(() => {
-    setIsReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }, []);
+  const isReduced = useReducedMotion();
   if (isReduced) return null;
   return <ScannerEffectInner />;
 }
