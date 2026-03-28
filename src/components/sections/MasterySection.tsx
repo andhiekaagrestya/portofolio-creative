@@ -8,7 +8,6 @@ import HandDrawnSVG from '@/components/HandDrawnSVG';
 import MousePhysics from '@/components/MousePhysics';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
-const DioramaLayer = dynamic(() => import('@/components/DioramaLayer'), { ssr: false });
 
 export default function MasterySection() {
   return (
