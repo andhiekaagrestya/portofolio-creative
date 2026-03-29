@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
+const PULL_RADIUS = 260; // px — masuk radius langsung force ke BH
+
 function CursorTrailInner() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const trailsRef = useRef<HTMLDivElement[]>([]);
@@ -15,11 +17,30 @@ function CursorTrailInner() {
     };
 
     const animate = () => {
-      // Smooth cursor follow
-      const dx = mousePos.current.x - cursorPos.current.x;
-      const dy = mousePos.current.y - cursorPos.current.y;
-      cursorPos.current.x += dx * 0.15;
-      cursorPos.current.y += dy * 0.15;
+      const bhEl = document.querySelector('[data-blackhole]') as HTMLElement | null;
+
+      let targetX = mousePos.current.x;
+      let targetY = mousePos.current.y;
+      let lerpSpeed = 0.15;
+
+      if (bhEl) {
+        const rect = bhEl.getBoundingClientRect();
+        const bhX = rect.left + rect.width / 2;
+        const bhY = rect.top + rect.height / 2;
+        const dist = Math.hypot(mousePos.current.x - bhX, mousePos.current.y - bhY);
+
+        if (dist < PULL_RADIUS) {
+          // Langsung force ke tengah BH
+          targetX = bhX;
+          targetY = bhY;
+          lerpSpeed = 0.12; // sedikit smooth supaya tidak terlalu rigid
+        }
+      }
+
+      const dx = targetX - cursorPos.current.x;
+      const dy = targetY - cursorPos.current.y;
+      cursorPos.current.x += dx * lerpSpeed;
+      cursorPos.current.y += dy * lerpSpeed;
 
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate(${cursorPos.current.x - 12}px, ${cursorPos.current.y - 12}px)`;
@@ -28,8 +49,8 @@ function CursorTrailInner() {
       // Trail dots
       trailsRef.current.forEach((trail, i) => {
         const delay = (i + 1) * 0.08;
-        const tx = mousePos.current.x - 4;
-        const ty = mousePos.current.y - 4;
+        const tx = targetX - 4;
+        const ty = targetY - 4;
         setTimeout(() => {
           if (trail) {
             trail.style.transform = `translate(${tx}px, ${ty}px)`;
