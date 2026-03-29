@@ -6,6 +6,7 @@ import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import BlackHole from '@/components/BlackHole';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
 
@@ -154,6 +155,14 @@ export default function FoundFootageSection() {
           opacity: 0.6,
         }}
       />
+
+      {/* Black hole — anomaly somewhere in the footage */}
+      <div
+        className="absolute z-20"
+        style={{ top: '48%', left: '6%' }}
+      >
+        <BlackHole />
+      </div>
 
       {/* Collage element in VHS section */}
       <CollageElement
