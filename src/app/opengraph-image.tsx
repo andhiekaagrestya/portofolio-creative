@@ -18,15 +18,14 @@ export default async function Image() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '80px',
-          background: '#1a1409',
+          background: '#f5e6c8',
         }}
       >
-        {/* Logo URL relies on NEXT_PUBLIC_SITE_URL being set to the production domain at build/runtime */}
         {/* Logo */}
         <img
           src={`${SITE_URL}/logo.png`}
-          width={120}
-          height={120}
+          width={240}
+          height={240}
           alt="logo"
           style={{ borderRadius: '50%' }}
         />
@@ -45,7 +44,7 @@ export default async function Image() {
             style={{
               fontSize: 72,
               fontWeight: 900,
-              color: '#f5e6c8',
+              color: '#1a1409',
               lineHeight: 1,
               fontFamily: 'serif',
             }}
@@ -55,7 +54,7 @@ export default async function Image() {
           <div
             style={{
               fontSize: 32,
-              color: '#c4956a',
+              color: '#7a4f1e',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
               fontFamily: 'monospace',
@@ -66,7 +65,7 @@ export default async function Image() {
           <div
             style={{
               fontSize: 22,
-              color: '#8b6914',
+              color: '#a0784a',
               fontFamily: 'monospace',
               marginTop: '16px',
             }}
