@@ -6,6 +6,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://andhiekaagrestya.n
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: 'WsxluTWxYD-GxjD8hDgBDXT5z7LY0Dsr8E0fZ7T5ZUY',
+  },
   title: 'Andhieka Agrestya — Software Engineer',
   description:
     'Andhieka Agrestya is a Software Engineer from Indonesia, specializing in fullstack development with Next.js, Go, and PostgreSQL. Explore an experimental portfolio built with collage animation, scrollytelling, and interactive physics.',
