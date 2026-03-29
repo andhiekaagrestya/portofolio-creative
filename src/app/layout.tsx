@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Andhieka Agrestya — Software Engineer & Creative Developer',
   description:
-    'Andhieka Agrestya is a Software Engineer and Creative Developer from Indonesia, specializing in fullstack development with Next.js, Go, and PostgreSQL. Explore an experimental portfolio built with collage animation, scrollytelling, and interactive physics.',
+    'Andhieka Agrestya is a Software Engineer from Indonesia, specializing in fullstack development with Next.js, Go, and PostgreSQL. Explore an experimental portfolio built with collage animation, scrollytelling, and interactive physics.',
   keywords: [
     'andhieka agrestya',
     'andhieka',
