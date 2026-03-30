@@ -159,7 +159,7 @@ export default function ProcessSection() {
         zIndex={8}
       />
 
-      {/* ── CLOTH RECEIPT — centered ── */}
+      {/* ── CLOTH RECEIPT — centered, transparent background ── */}
       <div
         style={{
           position: 'absolute',

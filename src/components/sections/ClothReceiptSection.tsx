@@ -209,11 +209,12 @@ function buildReceiptTexture(): HTMLCanvasElement {
 
 export default function ClothReceiptSection({ embedded = false }: ClothReceiptSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const embeddedRef = useRef(embedded);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext('webgl');
+    const gl = canvas.getContext('webgl', { alpha: true });
     if (!gl) return;
 
     // Resize
@@ -409,7 +410,11 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
       }
 
       // Draw
-      gl.clearColor(0.898, 0.898, 0.898, 1.0);
+      if (embeddedRef.current) {
+        gl.clearColor(0, 0, 0, 0); // transparent — let ProcessSection background show
+      } else {
+        gl.clearColor(0.898, 0.898, 0.898, 1.0);
+      }
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       setPerspective(projMatrix, fov, getAspect(), 0.1, 100.0);
