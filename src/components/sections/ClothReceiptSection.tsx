@@ -461,6 +461,23 @@ export default function ClothReceiptSection() {
         ref={canvasRef}
         style={{ width: '100%', height: '100%', display: 'block', cursor: 'grab' }}
       />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 40,
+          width: '100%',
+          textAlign: 'center',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          color: '#888',
+          fontSize: 17,
+          fontWeight: 500,
+          letterSpacing: '0.5px',
+          fontFamily: 'monospace',
+        }}
+      >
+        Grab and drag the receipt
+      </div>
     </section>
   );
 }
