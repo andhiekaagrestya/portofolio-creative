@@ -5,10 +5,10 @@ import CollageElement from '@/components/CollageElement';
 import ScatteredText from '@/components/ScatteredText';
 import HandDrawnSVG from '@/components/HandDrawnSVG';
 import WashiTape from '@/components/WashiTape';
-import StickyNote from '@/components/StickyNote';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
+const ClothReceiptSection = dynamic(() => import('@/components/sections/ClothReceiptSection'), { ssr: false });
 
 export default function ProcessSection() {
   const { isMobile, isTablet } = useMediaQuery();
@@ -99,85 +99,6 @@ export default function ProcessSection() {
         style={{ top: '80%', left: '10%', zIndex: 6 }}
       />
 
-      {/* ── STICKY NOTES CLUSTER ── */}
-      <StickyNote
-        color="yellow"
-        rotate={-6}
-        style={{ top: '14%', left: '12%', zIndex: 10 }}
-      >
-        <p className="font-bold text-sm mb-1">fix later™</p>
-        <p className="text-xs opacity-70">- refactor auth flow<br />- add tests (lol)<br />- cleanup console.log</p>
-      </StickyNote>
-
-      <StickyNote
-        color="pink"
-        rotate={5}
-        style={{ top: '12%', left: '38%', zIndex: 11 }}
-        pinColor="#8e44ad"
-      >
-        <p className="font-bold text-sm mb-1">idea 💡</p>
-        <p className="text-xs opacity-80">websocket + canvas<br />realtime collab tool?<br />→ explore this!!</p>
-      </StickyNote>
-
-      <StickyNote
-        color="blue"
-        rotate={-8}
-        style={{ top: '11%', right: '8%', zIndex: 10 }}
-        pinColor="#2471a3"
-      >
-        <p className="font-bold text-sm mb-2">stack check ✓</p>
-        <p className="text-xs leading-relaxed">Next.js ✓<br />Go ✓<br />PostgreSQL ✓<br />Docker ✓</p>
-      </StickyNote>
-
-      <StickyNote
-        color="green"
-        rotate={4}
-        style={{ top: '34%', left: '5%', zIndex: 9 }}
-        pinColor="#1a7a4a"
-      >
-        <p className="font-bold text-sm mb-1">deployed! 🚀</p>
-        <p className="text-xs opacity-70">prod at 2:37am<br />zero downtime<br />fingers crossed 🤞</p>
-      </StickyNote>
-
-      <StickyNote
-        color="orange"
-        rotate={-4}
-        style={{ top: '36%', left: '48%', zIndex: 12 }}
-        pinColor="#cc5500"
-      >
-        <p className="font-bold text-sm mb-1">deadline: NOW</p>
-        <p className="text-xs opacity-80">client wants it<br />yesterday<br />we ship today</p>
-      </StickyNote>
-
-      <StickyNote
-        color="yellow"
-        rotate={9}
-        style={{ top: '35%', right: '5%', zIndex: 10 }}
-      >
-        <p className="font-bold text-sm mb-1">bugs = features</p>
-        <p className="text-xs opacity-70">&quot;it&apos;s not a bug,<br />it&apos;s undocumented<br />behavior&quot; — me</p>
-      </StickyNote>
-
-      <StickyNote
-        color="pink"
-        rotate={-7}
-        style={{ top: '57%', left: '22%', zIndex: 11 }}
-        pinColor="#c0392b"
-      >
-        <p className="font-bold text-sm mb-1">reminder 📌</p>
-        <p className="text-xs opacity-80">sleep is important<br />...but so is this<br />commit.</p>
-      </StickyNote>
-
-      <StickyNote
-        color="blue"
-        rotate={6}
-        style={{ top: '58%', right: '12%', zIndex: 10 }}
-        pinColor="#1a5276"
-      >
-        <p className="font-bold text-sm mb-1">learned today</p>
-        <p className="text-xs opacity-70">GSAP ScrollTrigger<br />pin + scrub combo<br />→ mind blown 🤯</p>
-      </StickyNote>
-
       {/* ── TIMESTAMP LOG TRAIL ── */}
       <ScatteredText
         text="[02:47am] fixed the hydration bug"
@@ -220,12 +141,45 @@ export default function ProcessSection() {
         zIndex={7}
       />
 
-      {/* ── HAND-DRAWN SQUIGGLE between notes ── */}
+      {/* ── QUOTES as ScatteredText ── */}
+      <ScatteredText
+        text={`"it's not a bug, it's undocumented behavior" — me`}
+        style={{ top: '13%', right: '6%', rotate: '2deg', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-warm)"
+        animationType="fade"
+        zIndex={8}
+      />
+      <ScatteredText
+        text={`"sleep is important... but so is this commit"`}
+        style={{ top: '57%', left: '5%', rotate: '-2deg', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
+        font="mono"
+        color="var(--accent-cream)"
+        animationType="fade"
+        zIndex={8}
+      />
+
+      {/* ── CLOTH RECEIPT — centered ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '28%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'min(500px, 80vw)',
+          height: '50vh',
+          zIndex: 15,
+        }}
+      >
+        <ClothReceiptSection embedded />
+      </div>
+
+      {/* ── HAND-DRAWN SQUIGGLE ── */}
       <HandDrawnSVG
         preset="squiggle"
         width={120}
         height={30}
-        style={{ top: '30%', left: '30%', rotate: '8deg' }}
+        style={{ top: '30%', left: '15%', rotate: '8deg' }}
         color="var(--accent-sepia)"
         strokeWidth={1.5}
         duration={1.8}

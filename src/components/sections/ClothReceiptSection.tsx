@@ -2,6 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 
+interface ClothReceiptSectionProps {
+  embedded?: boolean;
+}
+
 const VS_SOURCE = `
   attribute vec3 a_pos;
   attribute vec3 a_norm;
@@ -203,7 +207,7 @@ function buildReceiptTexture(): HTMLCanvasElement {
   return texCanvas;
 }
 
-export default function ClothReceiptSection() {
+export default function ClothReceiptSection({ embedded = false }: ClothReceiptSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -446,6 +450,17 @@ export default function ClothReceiptSection() {
       gl.deleteProgram(program);
     };
   }, []);
+
+  if (embedded) {
+    return (
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <canvas
+          ref={canvasRef}
+          style={{ width: '100%', height: '100%', display: 'block', cursor: 'grab' }}
+        />
+      </div>
+    );
+  }
 
   return (
     <section
