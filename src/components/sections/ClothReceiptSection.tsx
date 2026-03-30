@@ -43,6 +43,7 @@ function createShader(gl: WebGLRenderingContext, type: number, source: string): 
   gl.compileShader(s);
   if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
     console.error(gl.getShaderInfoLog(s));
+    gl.deleteShader(s);
     return null;
   }
   return s;
