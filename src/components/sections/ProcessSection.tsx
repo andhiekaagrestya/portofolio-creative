@@ -159,20 +159,8 @@ export default function ProcessSection() {
         zIndex={8}
       />
 
-      {/* ── CLOTH RECEIPT — centered, transparent background ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '28%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'min(500px, 80vw)',
-          height: '50vh',
-          zIndex: 15,
-        }}
-      >
-        <ClothReceiptSection embedded />
-      </div>
+      {/* ── CLOTH RECEIPT — centered, no container ── */}
+      <ClothReceiptSection embedded />
 
       {/* ── HAND-DRAWN SQUIGGLE ── */}
       <HandDrawnSVG

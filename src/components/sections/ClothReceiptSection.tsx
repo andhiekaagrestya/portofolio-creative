@@ -217,10 +217,13 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
     const gl = canvas.getContext('webgl', { alpha: true });
     if (!gl) return;
 
-    // Resize
+    // Resize — follow parent container, not window
     const resize = () => {
-      canvas.width = window.innerWidth * window.devicePixelRatio;
-      canvas.height = window.innerHeight * window.devicePixelRatio;
+      const parent = canvas.parentElement;
+      const w = parent ? parent.clientWidth : window.innerWidth;
+      const h = parent ? parent.clientHeight : window.innerHeight;
+      canvas.width = w * window.devicePixelRatio;
+      canvas.height = h * window.devicePixelRatio;
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
     window.addEventListener('resize', resize);
@@ -274,8 +277,8 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
 
     const projMatrix = new Float32Array(16);
     const viewMatrix = new Float32Array(16);
-    const camPos = { x: 0, y: -2.0, z: 8.5 };
-    const fov = 45 * Math.PI / 180;
+    const camPos = { x: 0, y: -2.0, z: 5.5 };
+    const fov = 65 * Math.PI / 180;
 
     // Interaction
     let pointerX = 0, pointerY = 0;
@@ -295,8 +298,9 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
     };
 
     const updatePointer = (e: PointerEvent) => {
-      pointerX = (e.clientX / window.innerWidth) * 2 - 1;
-      pointerY = -(e.clientY / window.innerHeight) * 2 + 1;
+      const rect = canvas.getBoundingClientRect();
+      pointerX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     };
 
     const onDown = (e: PointerEvent) => {
@@ -458,12 +462,20 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
 
   if (embedded) {
     return (
-      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <canvas
-          ref={canvasRef}
-          style={{ width: '100%', height: '100%', display: 'block', cursor: 'grab' }}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'min(480px, 70vw)',
+          height: '60vh',
+          display: 'block',
+          cursor: 'grab',
+          zIndex: 15,
+        }}
+      />
     );
   }
 
