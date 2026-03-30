@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
     google: 'WsxluTWxYD-GxjD8hDgBDXT5z7LY0Dsr8E0fZ7T5ZUY',
+    other: {
+      'msvalidate.01': '4E455B490F90D140D4E237B98199013B',
+    },
   },
   title: 'Andhieka Agrestya — Software Engineer',
   description:
