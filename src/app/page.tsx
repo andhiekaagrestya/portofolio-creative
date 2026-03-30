@@ -24,6 +24,7 @@ const CursorTrail = dynamic(() => import('@/components/CursorTrail'), { ssr: fal
 const AmbientSound = dynamic(() => import('@/components/AmbientSound'), { ssr: false });
 const TimeAwareTheme = dynamic(() => import('@/components/TimeAwareTheme'), { ssr: false });
 const ScannerEffect = dynamic(() => import('@/components/ScannerEffect'), { ssr: false });
+const ClothReceiptSection = dynamic(() => import('@/components/sections/ClothReceiptSection'), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -97,6 +98,7 @@ export default function Home() {
       </div>
 
       <main ref={mainRef} className="relative" style={{ zIndex: 1 }}>
+        <ClothReceiptSection />
         <IntroSection />
         <OriginSection />
         <GrowthSection />
