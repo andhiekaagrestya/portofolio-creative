@@ -212,8 +212,235 @@ export default function ClothReceiptSection() {
     const gl = canvas.getContext('webgl');
     if (!gl) return;
 
-    // cleanup placeholder
-    return () => {};
+    // Resize
+    const resize = () => {
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Texture
+    const texCanvas = buildReceiptTexture();
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texCanvas);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // Shader program
+    const program = gl.createProgram()!;
+    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, VS_SOURCE)!);
+    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, FS_SOURCE)!);
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    const aPos = gl.getAttribLocation(program, 'a_pos');
+    const aNorm = gl.getAttribLocation(program, 'a_norm');
+    const aUv = gl.getAttribLocation(program, 'a_uv');
+    const uProj = gl.getUniformLocation(program, 'u_proj');
+    const uView = gl.getUniformLocation(program, 'u_view');
+
+    // Cloth geometry
+    const NUM_X = 25, NUM_Y = 50;
+    const { particles, constraints, uvData, indices } = buildCloth(NUM_X, NUM_Y, 3.0, 6.0);
+    const numParticles = NUM_X * NUM_Y;
+
+    const posData = new Float32Array(numParticles * 3);
+    const normalData = new Float32Array(numParticles * 3);
+
+    const posBuf = gl.createBuffer();
+    const normBuf = gl.createBuffer();
+    const uvBuf = gl.createBuffer();
+    const idxBuf = gl.createBuffer();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, uvData, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    gl.enable(gl.DEPTH_TEST);
+
+    const projMatrix = new Float32Array(16);
+    const viewMatrix = new Float32Array(16);
+    const camPos = { x: 0, y: -2.0, z: 8.5 };
+    const fov = 45 * Math.PI / 180;
+
+    // Interaction
+    let pointerX = 0, pointerY = 0;
+    let grabbedIndex = -1;
+    let grabDepth = 0;
+
+    const getAspect = () => canvas.width / canvas.height;
+
+    const getRay = () => {
+      const aspect = getAspect();
+      const tanFov = Math.tan(fov / 2);
+      const dx = pointerX * aspect * tanFov;
+      const dy = pointerY * tanFov;
+      const dz = -1;
+      const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      return { origin: { ...camPos }, dir: { x: dx / len, y: dy / len, z: dz / len } };
+    };
+
+    const updatePointer = (e: PointerEvent) => {
+      pointerX = (e.clientX / window.innerWidth) * 2 - 1;
+      pointerY = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    const onDown = (e: PointerEvent) => {
+      updatePointer(e);
+      const ray = getRay();
+      let minDist = Infinity;
+      let bestIdx = -1;
+      for (let i = 0; i < numParticles; i++) {
+        const p = particles[i];
+        const vx = p.x - ray.origin.x;
+        const vy = p.y - ray.origin.y;
+        const vz = p.z - ray.origin.z;
+        const t = vx * ray.dir.x + vy * ray.dir.y + vz * ray.dir.z;
+        const px = ray.origin.x + ray.dir.x * t;
+        const py = ray.origin.y + ray.dir.y * t;
+        const pz = ray.origin.z + ray.dir.z * t;
+        const dist = Math.sqrt((p.x - px) ** 2 + (p.y - py) ** 2 + (p.z - pz) ** 2);
+        if (dist < minDist && dist < 1.0) { minDist = dist; bestIdx = i; grabDepth = t; }
+      }
+      if (bestIdx !== -1) { grabbedIndex = bestIdx; canvas.style.cursor = 'grabbing'; }
+    };
+
+    const onMove = (e: PointerEvent) => {
+      updatePointer(e);
+      if (grabbedIndex !== -1) {
+        const ray = getRay();
+        const p = particles[grabbedIndex];
+        p.x = ray.origin.x + ray.dir.x * grabDepth;
+        p.y = ray.origin.y + ray.dir.y * grabDepth;
+        p.z = ray.origin.z + ray.dir.z * grabDepth;
+        p.ox = p.x; p.oy = p.y; p.oz = p.z;
+      }
+    };
+
+    const onUp = () => {
+      if (grabbedIndex !== -1 && grabbedIndex < NUM_X) {
+        const p = particles[grabbedIndex];
+        p.x = p.origX; p.y = p.origY; p.z = p.origZ;
+        p.ox = p.origX; p.oy = p.origY; p.oz = p.origZ;
+      }
+      grabbedIndex = -1;
+      canvas.style.cursor = 'grab';
+    };
+
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerup', onUp);
+    canvas.addEventListener('pointercancel', onUp);
+
+    // Render loop
+    let time = 0;
+    let rafId: number;
+
+    const render = () => {
+      time += 0.016;
+
+      // Physics
+      const windX = Math.sin(time * 1.5) * 0.0015;
+      const windZ = Math.cos(time * 1.1) * 0.0015;
+      for (let i = 0; i < numParticles; i++) {
+        if (i < NUM_X || i === grabbedIndex) continue;
+        const p = particles[i];
+        const vx = (p.x - p.ox) * 0.985;
+        const vy = (p.y - p.oy) * 0.985;
+        const vz = (p.z - p.oz) * 0.985;
+        p.ox = p.x; p.oy = p.y; p.oz = p.z;
+        const windFactor = p.y / -6.0;
+        p.x += vx + windX * windFactor;
+        p.y += vy - 0.007;
+        p.z += vz + windZ * windFactor;
+      }
+
+      // Constraints
+      for (let iter = 0; iter < 15; iter++) {
+        for (let i = 0; i < constraints.length; i++) {
+          const c = constraints[i];
+          const p1 = particles[c.p1];
+          const p2 = particles[c.p2];
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const dz = p2.z - p1.z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          const w1 = (c.p1 < NUM_X || c.p1 === grabbedIndex) ? 0 : 1;
+          const w2 = (c.p2 < NUM_X || c.p2 === grabbedIndex) ? 0 : 1;
+          const wSum = w1 + w2;
+          if (wSum > 0) {
+            const diff = (dist - c.rest) / (dist * wSum);
+            if (w1) { p1.x += dx * diff; p1.y += dy * diff; p1.z += dz * diff; }
+            if (w2) { p2.x -= dx * diff; p2.y -= dy * diff; p2.z -= dz * diff; }
+          }
+        }
+      }
+
+      // Update pos & normals
+      normalData.fill(0);
+      for (let i = 0; i < numParticles; i++) {
+        const p = particles[i];
+        posData[i * 3] = p.x; posData[i * 3 + 1] = p.y; posData[i * 3 + 2] = p.z;
+      }
+      for (let i = 0; i < indices.length; i += 3) {
+        const i1 = indices[i], i2 = indices[i + 1], i3 = indices[i + 2];
+        const v1x = posData[i1*3], v1y = posData[i1*3+1], v1z = posData[i1*3+2];
+        const v2x = posData[i2*3], v2y = posData[i2*3+1], v2z = posData[i2*3+2];
+        const v3x = posData[i3*3], v3y = posData[i3*3+1], v3z = posData[i3*3+2];
+        const nx = (v2y-v1y)*(v3z-v1z) - (v2z-v1z)*(v3y-v1y);
+        const ny = (v2z-v1z)*(v3x-v1x) - (v2x-v1x)*(v3z-v1z);
+        const nz = (v2x-v1x)*(v3y-v1y) - (v2y-v1y)*(v3x-v1x);
+        normalData[i1*3]+=nx; normalData[i1*3+1]+=ny; normalData[i1*3+2]+=nz;
+        normalData[i2*3]+=nx; normalData[i2*3+1]+=ny; normalData[i2*3+2]+=nz;
+        normalData[i3*3]+=nx; normalData[i3*3+1]+=ny; normalData[i3*3+2]+=nz;
+      }
+
+      // Draw
+      gl.clearColor(0.898, 0.898, 0.898, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      setPerspective(projMatrix, fov, getAspect(), 0.1, 100.0);
+      setTranslation(viewMatrix, -camPos.x, -camPos.y, -camPos.z);
+      gl.uniformMatrix4fv(uProj, false, projMatrix);
+      gl.uniformMatrix4fv(uView, false, viewMatrix);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, posData, gl.DYNAMIC_DRAW);
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, normBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, normalData, gl.DYNAMIC_DRAW);
+      gl.enableVertexAttribArray(aNorm);
+      gl.vertexAttribPointer(aNorm, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, uvBuf);
+      gl.enableVertexAttribArray(aUv);
+      gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
+      gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+      rafId = requestAnimationFrame(render);
+    };
+
+    rafId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', resize);
+      canvas.removeEventListener('pointerdown', onDown);
+      canvas.removeEventListener('pointermove', onMove);
+      canvas.removeEventListener('pointerup', onUp);
+      canvas.removeEventListener('pointercancel', onUp);
+      gl.deleteTexture(tex);
+      gl.deleteProgram(program);
+    };
   }, []);
 
   return (
