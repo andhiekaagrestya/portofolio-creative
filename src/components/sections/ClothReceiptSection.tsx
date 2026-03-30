@@ -232,10 +232,14 @@ export default function ClothReceiptSection() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
     // Shader program
+    const vertShader = createShader(gl, gl.VERTEX_SHADER, VS_SOURCE)!;
+    const fragShader = createShader(gl, gl.FRAGMENT_SHADER, FS_SOURCE)!;
     const program = gl.createProgram()!;
-    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, VS_SOURCE)!);
-    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, FS_SOURCE)!);
+    gl.attachShader(program, vertShader);
+    gl.attachShader(program, fragShader);
     gl.linkProgram(program);
+    gl.deleteShader(vertShader);
+    gl.deleteShader(fragShader);
     gl.useProgram(program);
 
     const aPos = gl.getAttribLocation(program, 'a_pos');
