@@ -66,6 +66,63 @@ function setTranslation(out: Float32Array, x: number, y: number, z: number) {
   out[12] = x; out[13] = y; out[14] = z;
 }
 
+interface Particle {
+  x: number; y: number; z: number;
+  ox: number; oy: number; oz: number;
+  origX: number; origY: number; origZ: number;
+}
+
+interface Constraint {
+  p1: number; p2: number; rest: number;
+}
+
+function buildCloth(numX: number, numY: number, width: number, height: number) {
+  const particles: Particle[] = [];
+  const uvData = new Float32Array(numX * numY * 2);
+
+  for (let y = 0; y < numY; y++) {
+    for (let x = 0; x < numX; x++) {
+      const px = (x / (numX - 1) - 0.5) * width;
+      const py = -(y / (numY - 1)) * height;
+      const pz = 0;
+      const i = y * numX + x;
+      particles.push({ x: px, y: py, z: pz, ox: px, oy: py, oz: pz, origX: px, origY: py, origZ: pz });
+      uvData[i * 2] = x / (numX - 1);
+      uvData[i * 2 + 1] = y / (numY - 1);
+    }
+  }
+
+  const constraints: Constraint[] = [];
+  const addC = (i1: number, i2: number) => {
+    const dx = particles[i2].x - particles[i1].x;
+    const dy = particles[i2].y - particles[i1].y;
+    const dz = particles[i2].z - particles[i1].z;
+    constraints.push({ p1: i1, p2: i2, rest: Math.sqrt(dx * dx + dy * dy + dz * dz) });
+  };
+
+  for (let y = 0; y < numY; y++) {
+    for (let x = 0; x < numX; x++) {
+      const i = y * numX + x;
+      if (x < numX - 1) addC(i, i + 1);
+      if (y < numY - 1) addC(i, i + numX);
+      if (x < numX - 1 && y < numY - 1) { addC(i, i + numX + 1); addC(i + 1, i + numX); }
+      if (x < numX - 2) addC(i, i + 2);
+      if (y < numY - 2) addC(i, i + numX * 2);
+    }
+  }
+
+  const indices: number[] = [];
+  for (let y = 0; y < numY - 1; y++) {
+    for (let x = 0; x < numX - 1; x++) {
+      const i = y * numX + x;
+      indices.push(i, i + 1, i + numX);
+      indices.push(i + 1, i + numX + 1, i + numX);
+    }
+  }
+
+  return { particles, constraints, uvData, indices };
+}
+
 function buildReceiptTexture(): HTMLCanvasElement {
   const texCanvas = document.createElement('canvas');
   texCanvas.width = 1024;
