@@ -125,12 +125,6 @@ export default function VisionSection() {
           zIndex={5}
         />
 
-        {/* USB Flash Drive CV Download */}
-        {/* <div className="absolute z-20" style={{ top: '15%', right: '10%' }}>
-          <div className="scale-75 md:scale-100 origin-center">
-            <UsbDriveDownload />
-          </div>
-        </div> */}
 
         <ScatteredText
           text="andhiekaagrestya.netlify.app"

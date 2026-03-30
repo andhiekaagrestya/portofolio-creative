@@ -57,17 +57,25 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Andhieka Agrestya',
-  jobTitle: 'Software Engineer',
-  url: SITE_URL,
-  sameAs: [
-    'https://github.com/andhiekaagrestya',
-    'https://linkedin.com/in/andhiekaagrestya',
-  ],
-};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Andhieka Agrestya',
+    url: SITE_URL,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Andhieka Agrestya',
+    jobTitle: 'Software Engineer',
+    url: SITE_URL,
+    sameAs: [
+      'https://github.com/andhiekaagrestya',
+      'https://linkedin.com/in/andhiekaagrestya',
+    ],
+  },
+];
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
