@@ -2,6 +2,69 @@
 
 import { useEffect, useRef } from 'react';
 
+const VS_SOURCE = `
+  attribute vec3 a_pos;
+  attribute vec3 a_norm;
+  attribute vec2 a_uv;
+  uniform mat4 u_proj;
+  uniform mat4 u_view;
+  varying vec3 v_norm;
+  varying vec2 v_uv;
+  void main() {
+    v_norm = a_norm;
+    v_uv = a_uv;
+    gl_Position = u_proj * u_view * vec4(a_pos, 1.0);
+  }
+`;
+
+const FS_SOURCE = `
+  precision mediump float;
+  varying vec3 v_norm;
+  varying vec2 v_uv;
+  uniform sampler2D u_tex;
+  void main() {
+    vec3 norm = normalize(v_norm);
+    if (!gl_FrontFacing) norm = -norm;
+    vec3 lightDir1 = normalize(vec3(0.4, 0.8, 0.6));
+    vec3 lightDir2 = normalize(vec3(-0.5, -0.2, 0.8));
+    float diff1 = max(dot(norm, lightDir1), 0.0);
+    float diff2 = max(dot(norm, lightDir2), 0.0);
+    float ambient = 0.55;
+    vec4 texColor = texture2D(u_tex, v_uv);
+    vec3 finalColor = texColor.rgb * (ambient + diff1 * 0.4 + diff2 * 0.2);
+    gl_FragColor = vec4(finalColor, texColor.a);
+  }
+`;
+
+function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
+  const s = gl.createShader(type);
+  if (!s) return null;
+  gl.shaderSource(s, source);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(s));
+    return null;
+  }
+  return s;
+}
+
+function setPerspective(out: Float32Array, fovy: number, aspect: number, near: number, far: number) {
+  const f = 1.0 / Math.tan(fovy / 2);
+  const nf = 1 / (near - far);
+  out.fill(0);
+  out[0] = f / aspect;
+  out[5] = f;
+  out[10] = (far + near) * nf;
+  out[11] = -1;
+  out[14] = (2 * far * near) * nf;
+}
+
+function setTranslation(out: Float32Array, x: number, y: number, z: number) {
+  out.fill(0);
+  out[0] = 1; out[5] = 1; out[10] = 1; out[15] = 1;
+  out[12] = x; out[13] = y; out[14] = z;
+}
+
 function buildReceiptTexture(): HTMLCanvasElement {
   const texCanvas = document.createElement('canvas');
   texCanvas.width = 1024;
