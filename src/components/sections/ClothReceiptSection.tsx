@@ -6,14 +6,14 @@ function buildReceiptTexture(): HTMLCanvasElement {
   const texCanvas = document.createElement('canvas');
   texCanvas.width = 1024;
   texCanvas.height = 2048;
-  const ctx = texCanvas.getContext('2d')!;
+  const ctx = texCanvas.getContext('2d');
+  if (!ctx) throw new Error('buildReceiptTexture: failed to get 2D context');
   ctx.scale(2, 2);
   const W = 512;
-  const H = 1024;
 
   // Paper background
   ctx.fillStyle = '#f8f8f4';
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(0, 0, W, 1024);
   ctx.fillStyle = '#1a1a1a';
 
   // Header
