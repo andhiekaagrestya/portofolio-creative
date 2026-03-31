@@ -15,7 +15,7 @@ export default function ProcessSection() {
   const height = isMobile ? '200vh' : isTablet ? '240vh' : '280vh';
 
   return (
-    <div className="relative overflow-hidden" style={{ height }}>
+    <div className="relative" style={{ height, overflow: 'clip' }}>
 
       {/* Ambient warm glow */}
       <div className="absolute w-200 h-200 rounded-full pointer-events-none"

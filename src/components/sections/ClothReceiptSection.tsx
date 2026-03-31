@@ -137,72 +137,89 @@ function buildReceiptTexture(): HTMLCanvasElement {
   const W = 512;
 
   // Paper background
-  ctx.fillStyle = '#f8f8f4';
+  ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, 1024);
   ctx.fillStyle = '#1a1a1a';
 
-  // Header
-  ctx.font = 'bold 36px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('THE FLORNRM SHOP', W / 2, 80);
-  ctx.font = '22px monospace';
-  ctx.fillText('42 Mesh Lane, WebGL City', W / 2, 125);
-  ctx.fillText('Tel: (555) 042-1337', W / 2, 160);
-
-  // Meta info
+  // Header — big title
+  ctx.font = 'bold 72px sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('Date: 2026-02-23  14:17', 40, 230);
-  ctx.fillText('Order: #00382', 40, 270);
+  ctx.fillText('About', 40, 100);
 
-  // Divider
-  ctx.textAlign = 'center';
-  ctx.fillText('- - - - - - - - - - - - - - - - - -', W / 2, 320);
+  // Section number
+  ctx.font = 'bold 28px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('01', W - 40, 80);
 
-  // Items
+  ctx.fillStyle = '#1a1a1a';
+
+  // Tagline
+  ctx.font = '22px sans-serif';
   ctx.textAlign = 'left';
-  const startY = 380;
-  const lineH = 45;
-  const items = [
-    ['Vertex Shader', '$4.20'],
-    ['Fragment Shader', '$3.50'],
-    ['Normal Map', '$2.80'],
-    ['UV Unwrap', '$1.50'],
-    ['Cloth Simulation', '$6.00'],
+  ctx.fillStyle = '#444';
+  ctx.fillText('Independant creative', 40, 185);
+
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillText('developer & designer', 40, 220);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('based in Jakarta.', 40, 255);
+
+  // Divider space
+  ctx.fillStyle = '#1a1a1a';
+
+  // Bio paragraph
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillText('Graduated from Yarsi University,', 40, 340);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  const bioLines = [
+    'I had the opportunity to work',
+    'with amazing people and',
+    'companies like',
   ];
-  items.forEach(([name, price], i) => {
-    ctx.textAlign = 'left';
-    ctx.fillText(name, 40, startY + lineH * i);
-    ctx.textAlign = 'right';
-    ctx.fillText(price, W - 40, startY + lineH * i);
+  bioLines.forEach((line, i) => {
+    ctx.fillText(line, 40, 385 + i * 40);
   });
 
-  // Divider
-  ctx.textAlign = 'center';
-  ctx.fillText('- - - - - - - - - - - - - - - - - -', W / 2, 610);
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillText('Telkom, BRI, Gojek...', 40, 510);
 
-  // Subtotal & tax
-  ctx.textAlign = 'left';
-  ctx.fillText('Subtotal', 40, 670);
-  ctx.fillText('Tax (8%)', 40, 715);
+  // Second paragraph
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('I like to create', 40, 590);
+
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillText('unique digital', 40, 630);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillText('experience', 40, 670);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('through motion.', 40, 710);
+
+  // Feel free
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('Feel free to contact me.', 40, 790);
+
+  // Divider line
+  // ctx.fillStyle = '#1a1a1a';
+  // ctx.fillRect(40, 870, W - 80, 3);
+
+  // Footer — enjoy line, bottom right
+  ctx.font = '18px sans-serif';
+  ctx.fillStyle = '#888';
   ctx.textAlign = 'right';
-  ctx.fillText('$18.00', W - 40, 670);
-  ctx.fillText('$1.44', W - 40, 715);
-
-  // Total
-  ctx.fillRect(40, 755, W - 80, 5);
-  ctx.font = 'bold 28px monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText('TOTAL', 40, 815);
-  ctx.textAlign = 'right';
-  ctx.fillText('$19.44', W - 40, 815);
-
-  // Footer
-  ctx.font = '22px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('Thank you for visiting!', W / 2, 920);
-  ctx.font = '18px monospace';
-  ctx.fillStyle = '#555';
-  ctx.fillText('github.com/flornkm', W / 2, 960);
+  ctx.fillText('Enjoy this experimental website', W - 40, 940);
 
   return texCanvas;
 }
@@ -217,7 +234,7 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
     const gl = canvas.getContext('webgl', { alpha: true });
     if (!gl) return;
 
-    // Resize — follow parent container, not window
+    // Resize — fill entire parent (ProcessSection)
     const resize = () => {
       const parent = canvas.parentElement;
       const w = parent ? parent.clientWidth : window.innerWidth;
@@ -258,7 +275,7 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
 
     // Cloth geometry
     const NUM_X = 25, NUM_Y = 50;
-    const { particles, constraints, uvData, indices } = buildCloth(NUM_X, NUM_Y, 3.0, 6.0);
+    const { particles, constraints, uvData, indices } = buildCloth(NUM_X, NUM_Y, 2.0, 4.0);
     const numParticles = NUM_X * NUM_Y;
 
     const posData = new Float32Array(numParticles * 3);
@@ -277,7 +294,7 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
 
     const projMatrix = new Float32Array(16);
     const viewMatrix = new Float32Array(16);
-    const camPos = { x: 0, y: -2.0, z: 5.5 };
+    const camPos = { x: 0, y: -2.5, z: 4.5 };
     const fov = 65 * Math.PI / 180;
 
     // Interaction
@@ -415,7 +432,9 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
 
       // Draw
       if (embeddedRef.current) {
-        gl.clearColor(0, 0, 0, 0); // transparent — let ProcessSection background show
+        gl.clearColor(0, 0, 0, 0); 
+        // // transparent — let ProcessSection background show
+          // gl.clearColor(0.898, 0.898, 0.898, 1.0);
       } else {
         gl.clearColor(0.898, 0.898, 0.898, 1.0);
       }
@@ -466,12 +485,13 @@ export default function ClothReceiptSection({ embedded = false }: ClothReceiptSe
         ref={canvasRef}
         style={{
           position: 'absolute',
-          top: '20%',
+          top: '10%',
           left: '50%',
+          // right: '50%',
           transform: 'translateX(-50%)',
-          width: 'min(480px, 70vw)',
-          height: '60vh',
-          display: 'block',
+          width: '100%',
+          height: '100%',
+          // display: 'block',
           cursor: 'grab',
           zIndex: 15,
         }}
