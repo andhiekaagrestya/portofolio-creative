@@ -8,7 +8,7 @@ import WashiTape from '@/components/WashiTape';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const HoverMorphText = dynamic(() => import('@/components/HoverMorphText'), { ssr: false });
-const ClothReceiptSection = dynamic(() => import('@/components/sections/ClothReceiptSection'), { ssr: false });
+const ClothAboutSection = dynamic(() => import('@/components/sections/ClothAboutSection'), { ssr: false });
 
 export default function ProcessSection() {
   const { isMobile, isTablet } = useMediaQuery();
@@ -160,7 +160,7 @@ export default function ProcessSection() {
       />
 
       {/* ── CLOTH RECEIPT — centered, no container ── */}
-      <ClothReceiptSection embedded />
+      <ClothAboutSection embedded />
 
       {/* ── HAND-DRAWN SQUIGGLE ── */}
       <HandDrawnSVG

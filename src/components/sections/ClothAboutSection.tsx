@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-interface ClothReceiptSectionProps {
+interface ClothAboutSectionProps {
   embedded?: boolean;
 }
 
@@ -161,55 +161,63 @@ function buildReceiptTexture(): HTMLCanvasElement {
 
   ctx.font = 'bold 22px sans-serif';
   ctx.fillStyle = '#1a1a1a';
-  ctx.fillText('developer & designer', 40, 220);
+  ctx.fillText('developer & designer', 40, 215);
+  const boldWidth = ctx.measureText('developer & designer ').width;
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('based', 40 + boldWidth, 215);
 
   ctx.font = '22px sans-serif';
   ctx.fillStyle = '#444';
-  ctx.fillText('based in Jakarta.', 40, 255);
+  ctx.fillText('in Jakarta.', 40, 245);
 
   // Divider space
   ctx.fillStyle = '#1a1a1a';
 
   // Bio paragraph
   ctx.font = 'bold 22px sans-serif';
-  ctx.fillText('Graduated from Yarsi University,', 40, 340);
+  ctx.fillText('Graduated from Yarsi University,', 40, 320);
+  const boldWidth2 = ctx.measureText('Graduated from Yarsi University,').width;
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText('I', 40 + boldWidth2, 320);
 
   ctx.font = '22px sans-serif';
   ctx.fillStyle = '#444';
   const bioLines = [
-    'I had the opportunity to work',
+    'had the opportunity to work',
     'with amazing people and',
     'companies like',
   ];
   bioLines.forEach((line, i) => {
-    ctx.fillText(line, 40, 385 + i * 40);
+    ctx.fillText(line, 42, 345 + i * 25);
   });
 
   ctx.font = 'bold 22px sans-serif';
   ctx.fillStyle = '#1a1a1a';
-  ctx.fillText('Telkom, BRI, Gojek...', 40, 510);
+  ctx.fillText('Telkom, BRI, Gojek...', 40, 422);
 
   // Second paragraph
   ctx.font = '22px sans-serif';
   ctx.fillStyle = '#444';
-  ctx.fillText('I like to create', 40, 590);
+  ctx.fillText('I like to create', 40, 500);
+  const lineWidth = ctx.measureText('I like to create ').width;
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillText('unique digital', 40 + lineWidth, 500);
 
   ctx.font = 'bold 22px sans-serif';
   ctx.fillStyle = '#1a1a1a';
-  ctx.fillText('unique digital', 40, 630);
-
-  ctx.font = '22px sans-serif';
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillText('experience', 40, 670);
-
+  ctx.fillText('experience', 40, 535);
+  const expWidth = ctx.measureText('experience ').width;
   ctx.font = '22px sans-serif';
   ctx.fillStyle = '#444';
-  ctx.fillText('through motion.', 40, 710);
+  ctx.fillText('through motion.', 40 + expWidth, 535);
 
   // Feel free
   ctx.font = '22px sans-serif';
   ctx.fillStyle = '#444';
-  ctx.fillText('Feel free to contact me.', 40, 790);
+  ctx.fillText('Feel free to contact me.', 40, 690);
 
   // Divider line
   // ctx.fillStyle = '#1a1a1a';
@@ -224,7 +232,7 @@ function buildReceiptTexture(): HTMLCanvasElement {
   return texCanvas;
 }
 
-export default function ClothReceiptSection({ embedded = false }: ClothReceiptSectionProps) {
+export default function ClothAboutSection({ embedded = false }: ClothAboutSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const embeddedRef = useRef(embedded);
 
