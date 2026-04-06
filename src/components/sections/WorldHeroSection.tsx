@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import ScatteredText from '@/components/ScatteredText';
+import { useScrollHijack } from '@/hooks/useScrollHijack';
 
 // ─── Depth layer data ─────────────────────────────────────────────
 // translateZ values: negative = further from camera
@@ -68,7 +69,7 @@ const FAR_ITEMS = [
 ];
 
 export default function WorldHeroSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { sectionRef, progress } = useScrollHijack<HTMLDivElement>({ sensitivity: 0.001 });
   const nameTitleRef = useRef<HTMLDivElement>(null);
   const closeLayerRef = useRef<HTMLDivElement>(null);
   const midLayerRef = useRef<HTMLDivElement>(null);
@@ -116,9 +117,21 @@ export default function WorldHeroSection() {
     };
   }, []);
 
+  // Fly-through: update mid + far layer opacity based on scroll progress
+  useEffect(() => {
+    if (!midLayerRef.current || !farLayerRef.current) return;
+
+    const midOpacity = Math.min(1, 0.55 + (progress / 0.5) * 0.45);
+    const farProgress = Math.max(0, (progress - 0.5) / 0.5);
+    const farOpacity = Math.min(1, 0.25 + farProgress * 0.75);
+
+    gsap.set(midLayerRef.current, { opacity: midOpacity });
+    gsap.set(farLayerRef.current, { opacity: farOpacity });
+  }, [progress]);
+
   return (
     <div
-      ref={containerRef}
+      ref={sectionRef}
       style={{
         position: 'relative',
         width: '100vw',
