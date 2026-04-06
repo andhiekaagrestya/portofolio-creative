@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import ScatteredText from '@/components/ScatteredText';
 
 // ─── Depth layer data ─────────────────────────────────────────────
@@ -72,6 +73,25 @@ export default function WorldHeroSection() {
   const closeLayerRef = useRef<HTMLDivElement>(null);
   const midLayerRef = useRef<HTMLDivElement>(null);
   const farLayerRef = useRef<HTMLDivElement>(null);
+
+  // Wave animation on name/title — starts after entry animation completes (delay 1.7s)
+  useEffect(() => {
+    if (!nameTitleRef.current) return;
+
+    const tween = gsap.to(nameTitleRef.current, {
+      y: 10,
+      rotation: 1.2,
+      duration: 2.8,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+      delay: 1.7,
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, []);
 
   return (
     <div
