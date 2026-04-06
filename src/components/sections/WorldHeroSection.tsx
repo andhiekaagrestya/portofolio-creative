@@ -1,10 +1,77 @@
 'use client';
 
 import { useRef } from 'react';
+import ScatteredText from '@/components/ScatteredText';
+
+// ─── Depth layer data ─────────────────────────────────────────────
+// translateZ values: negative = further from camera
+const CLOSE_ITEMS = [
+  {
+    text: 'curiosity drove everything',
+    style: { top: '20%', left: '8%', rotate: '-3deg', fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)', transform: 'translateZ(-150px)' },
+    font: 'serif' as const,
+    weight: '300',
+    italic: true,
+  },
+  {
+    text: 'late nights. broken code. breakthrough.',
+    style: { top: '70%', right: '6%', rotate: '2deg', fontSize: 'clamp(0.8rem, 1.5vw, 1.2rem)', transform: 'translateZ(-150px)' },
+    font: 'sans' as const,
+    weight: '300',
+  },
+  {
+    text: '// first_line_of_code',
+    style: { top: '45%', left: '62%', rotate: '4deg', fontSize: 'clamp(0.7rem, 1.2vw, 1rem)', transform: 'translateZ(-150px)' },
+    font: 'mono' as const,
+  },
+];
+
+const MID_ITEMS = [
+  {
+    text: 'WHERE IT ALL BEGAN',
+    style: { top: '15%', left: '38%', rotate: '-2deg', fontSize: 'clamp(1rem, 2.5vw, 2rem)', transform: 'translateZ(-500px)' },
+    font: 'serif' as const,
+    weight: '900',
+  },
+  {
+    text: "console.log('hello world');",
+    style: { top: '60%', left: '4%', rotate: '-1deg', fontSize: 'clamp(0.7rem, 1.2vw, 1rem)', transform: 'translateZ(-500px)' },
+    font: 'mono' as const,
+  },
+  {
+    text: 'motion is the message',
+    style: { top: '80%', right: '18%', rotate: '3deg', fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)', transform: 'translateZ(-500px)' },
+    font: 'sans' as const,
+    italic: true,
+  },
+];
+
+const FAR_ITEMS = [
+  {
+    text: 'crafted with intention',
+    style: { top: '25%', right: '12%', rotate: '-4deg', fontSize: 'clamp(0.8rem, 1.5vw, 1.2rem)', transform: 'translateZ(-900px)' },
+    font: 'sans' as const,
+    weight: '300',
+  },
+  {
+    text: 'design × engineering',
+    style: { top: '55%', left: '28%', rotate: '1deg', fontSize: 'clamp(0.7rem, 1.2vw, 1rem)', transform: 'translateZ(-900px)' },
+    font: 'mono' as const,
+  },
+  {
+    text: 'make it move',
+    style: { top: '75%', left: '14%', rotate: '-2deg', fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)', transform: 'translateZ(-900px)' },
+    font: 'serif' as const,
+    italic: true,
+  },
+];
 
 export default function WorldHeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const nameTitleRef = useRef<HTMLDivElement>(null);
+  const closeLayerRef = useRef<HTMLDivElement>(null);
+  const midLayerRef = useRef<HTMLDivElement>(null);
+  const farLayerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
@@ -19,7 +86,6 @@ export default function WorldHeroSection() {
         background: '#111',
       }}
     >
-      {/* perspective-3d inner layer */}
       <div
         style={{
           position: 'absolute',
@@ -27,7 +93,58 @@ export default function WorldHeroSection() {
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Name + Title block */}
+        {/* Far layer — opacity 0.25 */}
+        <div ref={farLayerRef} style={{ position: 'absolute', inset: 0, opacity: 0.25 }}>
+          {FAR_ITEMS.map((item, i) => (
+            <ScatteredText
+              key={`far-${i}`}
+              text={item.text}
+              style={item.style}
+              font={item.font}
+              weight={item.weight}
+              italic={item.italic}
+              color="var(--accent-cream)"
+              animationType="fade"
+              zIndex={1}
+            />
+          ))}
+        </div>
+
+        {/* Mid layer — opacity 0.55 */}
+        <div ref={midLayerRef} style={{ position: 'absolute', inset: 0, opacity: 0.55 }}>
+          {MID_ITEMS.map((item, i) => (
+            <ScatteredText
+              key={`mid-${i}`}
+              text={item.text}
+              style={item.style}
+              font={item.font}
+              weight={item.weight}
+              italic={item.italic}
+              color="var(--accent-cream)"
+              animationType="fade"
+              zIndex={2}
+            />
+          ))}
+        </div>
+
+        {/* Close layer — opacity 1.0 */}
+        <div ref={closeLayerRef} style={{ position: 'absolute', inset: 0, opacity: 1 }}>
+          {CLOSE_ITEMS.map((item, i) => (
+            <ScatteredText
+              key={`close-${i}`}
+              text={item.text}
+              style={item.style}
+              font={item.font}
+              weight={item.weight}
+              italic={item.italic}
+              color="var(--accent-warm)"
+              animationType="fade"
+              zIndex={3}
+            />
+          ))}
+        </div>
+
+        {/* Name + Title block — always in front */}
         <div
           ref={nameTitleRef}
           style={{
