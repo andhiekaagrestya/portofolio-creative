@@ -93,6 +93,29 @@ export default function WorldHeroSection() {
     };
   }, []);
 
+  // Float-up animation for close layer items — each at slightly different rhythm
+  useEffect(() => {
+    if (!closeLayerRef.current) return;
+
+    const items = closeLayerRef.current.querySelectorAll<HTMLElement>(':scope > div');
+    if (!items.length) return;
+
+    const tweens = Array.from(items).map((el, i) =>
+      gsap.to(el, {
+        y: -28 - i * 6,
+        duration: 5 + i * 1.2,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+        delay: i * 0.8,
+      })
+    );
+
+    return () => {
+      tweens.forEach((t) => t.kill());
+    };
+  }, []);
+
   return (
     <div
       ref={containerRef}
