@@ -75,6 +75,24 @@ export default function WorldHeroSection() {
   const midLayerRef = useRef<HTMLDivElement>(null);
   const farLayerRef = useRef<HTMLDivElement>(null);
 
+  // Entry animation: name/title fades in on mount
+  useEffect(() => {
+    if (!nameTitleRef.current) return;
+
+    gsap.fromTo(
+      nameTitleRef.current,
+      { opacity: 0, y: 30, filter: 'blur(8px)' },
+      {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 1.4,
+        delay: 0.3,
+        ease: 'power3.out',
+      }
+    );
+  }, []);
+
   // Wave animation on name/title — starts after entry animation completes (delay 1.7s)
   useEffect(() => {
     if (!nameTitleRef.current) return;
@@ -212,6 +230,7 @@ export default function WorldHeroSection() {
             textAlign: 'center',
             pointerEvents: 'none',
             userSelect: 'none',
+            opacity: 0,
           }}
         >
           <h1
