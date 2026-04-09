@@ -2,8 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { useScrollHijack } from '@/hooks/useScrollHijack';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ClothHeroSection from './ClothHeroSection';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Seeded RNG (LCG) — deterministic, no external deps ─────────────────────
 function makeRng(seed: number) {
@@ -47,7 +49,7 @@ const PHOTO_SRCS: (string | null)[][] = LEVELS.map(({ count }) =>
 const PERSPECTIVE = 20_000;
 
 export default function WorldHeroSection() {
-  const { sectionRef, progress } = useScrollHijack<HTMLDivElement>({ sensitivity: 0.0008 });
+  const sectionRef = useRef<HTMLDivElement>(null);
   const nameTitleRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
   const clothWrapRef = useRef<HTMLDivElement>(null);
@@ -63,13 +65,37 @@ export default function WorldHeroSection() {
     );
   }, []);
 
-  // Wave animation on name/title
+  // Wave animation on name/title characters (Continuous Infinite Sine Wave)
   useEffect(() => {
     if (!nameTitleRef.current) return;
-    const tween = gsap.to(nameTitleRef.current, {
-      y: 10, rotation: 1.2, duration: 2.8, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 1.7,
-    });
-    return () => { tween.kill(); };
+    
+    // Pisahkan huruf nama dan huruf title
+    const nameChars = nameTitleRef.current.querySelector('h1')?.querySelectorAll('.wave-char');
+    const titleChars = nameTitleRef.current.querySelector('p')?.querySelectorAll('.wave-char');
+    
+    // Konfigurasi animasi gelombang sinus yang mengalir tanpa akhir (tidak putar balik)
+    const animSettings: gsap.TweenVars = {
+      y: 12, 
+      rotation: 3, 
+      duration: 1.4, // Sedikit lebih lambat agar terasa mengambang (fluid)
+      ease: 'sine.inOut',
+      yoyo: true, 
+      repeat: -1, 
+      delay: 1.7, // Tunggu animasi masuk selesai
+      stagger: {
+        each: 0.06,
+        from: 'start',
+      }
+    };
+
+    // Jalankan secara paralel untuk Name dan Title agar sejajar sempurna
+    const tween1 = gsap.to(nameChars, animSettings);
+    const tween2 = gsap.to(titleChars, animSettings);
+
+    return () => { 
+      tween1.kill(); 
+      tween2.kill();
+    };
   }, []);
 
   // Float-up on the 2 closest levels
@@ -83,45 +109,71 @@ export default function WorldHeroSection() {
     });
   }, []);
 
-  // ─── Scroll effect: name recedes, cloth rises ───────────────────────────────
+  // ─── Native GSAP ScrollTrigger: Name recedes, cloth rises ────────────────
   useEffect(() => {
-    if (!nameTitleRef.current || !clothWrapRef.current || !worldRef.current) return;
+    if (!nameTitleRef.current || !clothWrapRef.current || !worldRef.current || !sectionRef.current) return;
 
-    // Phase 1 (0→0.5): Name + title recede backward, cloth slides up to cover
-    // Phase 2 (0.5→1): Cloth continues to fill screen
-
-    const nameProgress = Math.min(progress / 0.4, 1); // 0→1 during first 40%
-    const clothProgress = Math.min(progress / 0.6, 1); // 0→1 during first 60%
-
-    // Name recedes: scale down, move up slightly, fade out
-    gsap.set(nameTitleRef.current, {
-      scale: 1 - nameProgress * 0.4,
-      z: -nameProgress * 800,
-      opacity: 1 - nameProgress,
-      filter: `blur(${nameProgress * 6}px)`,
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: '+=100%', // Pin untuk 100vh jarak scroll
+        pin: true,
+        scrub: true, // Ubah ke true agar responsif. Lenis sudah mengurus kelembutan native scroll.
+      }
     });
 
-    // Starfield also recedes with name
-    gsap.set(worldRef.current, {
-      scale: 1 - nameProgress * 0.15,
-      opacity: 1 - nameProgress * 0.8,
-    });
+    // Name recedes: scale down, move up slightly, fade out (40% pertama)
+    tl.fromTo(nameTitleRef.current, {
+      scale: 1,
+      z: 0,
+      opacity: 1,
+      filter: 'blur(0px)',
+    }, {
+      scale: 0.6,
+      z: -800,
+      opacity: 0,
+      filter: 'blur(6px)',
+      duration: 0.4,
+      ease: 'none',
+    }, 0);
 
-    // Cloth slides up from below: starts at 65vh (peeking), moves to 0vh (covering)
-    const clothY = 65 - clothProgress * 65; // 65 → 0
-    gsap.set(clothWrapRef.current, {
-      y: `${clothY}vh`,
-    });
-  }, [progress]);
+    // Starfield also recedes with name (40% pertama)
+    tl.fromTo(worldRef.current, {
+      scale: 1,
+      opacity: 1,
+    }, {
+      scale: 0.85,
+      opacity: 0.2,
+      duration: 0.4,
+      ease: 'none',
+    }, 0);
+
+    // Cloth slides up from below to cover (keseluruhan durasi timeline)
+    tl.fromTo(clothWrapRef.current,
+      { y: '65vh' },
+      { y: '0vh', duration: 0.6, ease: 'none' },
+      0
+    );
+
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().forEach(t => {
+        if (t.vars.trigger === sectionRef.current) t.kill();
+      });
+    };
+  }, []);
 
   return (
-    <div
-      ref={sectionRef}
+    <div style={{ position: 'relative', width: '100%' }}>
+      <div
+        ref={sectionRef}
       style={{
         position: 'relative',
         width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
+        height: '160vh', // Harus cukup tinggi menutupi besaran height cloth (160vh)
+        overflowX: 'hidden',
+        overflowY: 'clip', // Clip hides horizontal overflows from space, but let Native Lenis scroll vertically seamlessly!
         perspective: `${PERSPECTIVE}px`,
         perspectiveOrigin: '50% 50%',
         background: '#111',
@@ -221,7 +273,7 @@ export default function WorldHeroSection() {
         ref={nameTitleRef}
         style={{
           position: 'absolute',
-          top: '42%',
+          top: '28%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 20,
@@ -244,7 +296,9 @@ export default function WorldHeroSection() {
             whiteSpace: 'nowrap',
           }}
         >
-          Andhieka Agrestya
+          {"Andhieka Agrestya".split('').map((char, i) => (
+            <span key={i} className="wave-char" style={{ display: 'inline-block', whiteSpace: 'pre' }}>{char}</span>
+          ))}
         </h1>
         <p
           style={{
@@ -259,7 +313,9 @@ export default function WorldHeroSection() {
             whiteSpace: 'nowrap',
           }}
         >
-          Software Engineer
+          {"Software Engineer".split('').map((char, i) => (
+            <span key={`p-${i}`} className="wave-char" style={{ display: 'inline-block', whiteSpace: 'pre' }}>{char}</span>
+          ))}
         </p>
       </div>
 
@@ -275,11 +331,12 @@ export default function WorldHeroSection() {
           zIndex: 30,
           transform: 'translateY(65vh)',
           willChange: 'transform',
-          pointerEvents: progress > 0.1 ? 'auto' : 'none',
+          pointerEvents: 'auto',
         }}
       >
         <ClothHeroSection embedded />
       </div>
+    </div>
     </div>
   );
 }
