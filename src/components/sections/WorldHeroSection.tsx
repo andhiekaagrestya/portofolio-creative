@@ -224,55 +224,82 @@ export default function WorldHeroSection() {
     });
   }, []);
 
-  // ─── Native GSAP ScrollTrigger: Name recedes, cloth rises ────────────────
+  // ─── Master GSAP ScrollTrigger Timeline ────────────────
   useEffect(() => {
     if (!nameTitleRef.current || !clothWrapRef.current || !worldRef.current || !sectionRef.current) return;
 
+    // Pinning the section for 700% to simulate a massive interconnected sequence
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top top',
-        end: '+=100%', // Pin untuk 100vh jarak scroll
+        end: '+=700%', // 7x tinggi layar untuk mengakomodasi pan miring
         pin: true,
-        scrub: true, // Ubah ke true agar responsif. Lenis sudah mengurus kelembutan native scroll.
+        scrub: true,
       }
     });
 
-    // Name recedes: scale down, move up slightly, fade out (40% pertama)
-    // Meniadakan efek transisi 'filter: blur()' saat melakukan ScrollTrigger.scrub 
-    // karena membebani thread GPU dan membuat lag parah/berat saat di-scroll
-    tl.fromTo(nameTitleRef.current, {
-      scale: 1,
-      z: 0,
-      opacity: 1,
-    }, {
-      scale: 0.6,
-      z: -800,
-      opacity: 0,
-      duration: 0.4,
-      ease: 'none',
-    }, 0);
-
-    // Starfield also recedes with name (40% pertama)
-    tl.fromTo(worldRef.current, {
-      scale: 1,
-      opacity: 1,
-    }, {
-      scale: 0.85,
-      opacity: 0.2,
-      duration: 0.4,
-      ease: 'none',
-    }, 0);
-
-    // Cloth slides up from below to cover (keseluruhan durasi timeline)
+    // --- PHASE 1 (0 -> 1): Initial Hero to Cloth Reveal ---
+    // Name recedes, starfield dims, Cloth slides up
+    tl.fromTo(nameTitleRef.current, 
+      { scale: 1, z: 0, opacity: 1 }, 
+      { scale: 0.6, z: -800, opacity: 0, duration: 1, ease: 'power1.inOut' }, 
+      0
+    );
+    tl.fromTo(worldRef.current, 
+      { scale: 1, opacity: 1, z: 0 }, 
+      { scale: 0.85, opacity: 0.2, duration: 1, ease: 'power1.inOut' }, 
+      0
+    );
     tl.fromTo(clothWrapRef.current,
       { y: '65vh' },
-      { y: '0vh', duration: 0.6, ease: 'none' },
+      { y: '0vh', duration: 1, ease: 'power1.inOut' },
       0
     );
 
+    // --- PHASE 2 (1 -> 2.5): Cloth Simulated Native Scroll ---
+    // Mensimulasikan pergerakan lembaran cloth naik hingga habis ke atas layar
+    tl.to(clothWrapRef.current, {
+      y: '-160vh', // Cloth keluar penuh ke atas
+      duration: 1.5,
+      ease: 'none' // Linear agar rasa scrollnya sama dengan native
+    }, 1);
+
+    // Menjelang Cloth habis ditarik atas (waktu 2 -> 2.5), kita pulihkan terang langit
+    tl.to(worldRef.current, {
+      scale: 1, // Normalisasikan skalanya sebelum adegan zoom
+      opacity: 1,
+      duration: 0.5,
+      ease: 'sine.inOut'
+    }, 2); // Overlap di seperempat terakhir perjalanan Cloth
+
+    // --- PHASE 3 (2.5 -> 4.5): 3D Starfield Z-Flight ---
+    // Setelah layar bersih tanpa Cloth, kamera (viewport) dipaksa maju menerobos masuk foto-foto depan
+    tl.to(worldRef.current, {
+      z: 8000, // Maju menembus puluhan ribu piksel melewati level kedalaman!
+      duration: 2, 
+      ease: 'power2.inOut' // Awalnya pelan, ngebut di tengah, rem pelan di ujung
+    }, 2.5);
+
+    // --- PHASE 4 (4.5 -> 5): Camera Stop ---
+    // Jeda sejenak tanpa animasi sebagai tumpuan berbelok
+    
+    // --- PHASE 5 (5 -> 7): Diagonal Pan (Kamera Kiri-Bawah) ---
+    // Kamera bergerak Kiri Bawah -> Alam semesta (worldRef) ditarik Kanan Atas
+    // Kemiringan 20 derajat (tan(20 deg) ~ 0.36397)
+    const panX = 1000; // x positif = latar ditarik ke kanan (kamera ke kiri)
+    const panY = -panX * Math.tan(20 * (Math.PI / 180)); // y negatif = latar ditarik ke atas (kamera turun)
+    
+    tl.to(worldRef.current, {
+      x: panX, 
+      y: panY,
+      duration: 2,
+      ease: 'power1.inOut' // Berakselerasi halus saat masuk dan di rem saat selesai
+    }, 5);
+
     return () => {
       tl.kill();
+
       ScrollTrigger.getAll().forEach(t => {
         if (t.vars.trigger === sectionRef.current) t.kill();
       });
@@ -286,9 +313,8 @@ export default function WorldHeroSection() {
       style={{
         position: 'relative',
         width: '100vw',
-        height: '160vh', // Harus cukup tinggi menutupi besaran height cloth (160vh)
-        overflowX: 'hidden',
-        overflowY: 'clip', // Clip hides horizontal overflows from space, but let Native Lenis scroll vertically seamlessly!
+        height: '100vh', // Dikembalikan ke 100vh karena kita kini mensimulasikan sisa ruang dengan GSAP
+        overflow: 'hidden', // Gembok total agar tak ada gangguan scroller
         perspective: `${PERSPECTIVE}px`,
         perspectiveOrigin: '50% 50%',
         background: '#111',
@@ -397,7 +423,7 @@ export default function WorldHeroSection() {
         ref={nameTitleRef}
         style={{
           position: 'absolute',
-          top: '28%',
+          top: '40%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 20,
@@ -451,7 +477,7 @@ export default function WorldHeroSection() {
           top: 0,
           left: 0,
           width: '100%',
-          height: '100%',
+          height: '160vh', // Tetapkan height Cloth pas 160vh (sehingga dia tidak mengisi 240vh)
           zIndex: 30,
           transform: 'translateY(65vh)',
           willChange: 'transform',
